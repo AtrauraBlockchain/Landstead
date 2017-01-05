@@ -7,7 +7,7 @@ function AppBackground($state, $rootScope) {
 
             $rootScope.$on('$stateChangeStart',
                 function(event, toState, toParams, fromState, fromParams) {
-                    if (toState.title == 'Home' || toState.title == 'Login' || toState.title == 'Signup') {
+                    if (toState.title == 'Login' || toState.title == 'Signup') {
                         element.css({
                             'background': 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("images/background.jpg")',
                             'background-size': 'cover'
