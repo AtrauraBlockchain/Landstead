@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" ui-sref="app.home"><span>nano</span><span>Wallet</span>*</a>
+      <a class="navbar-brand" ui-sref="app.home"><span>land</span><span>stead</span>*</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -24,7 +24,6 @@
         <li><a style="outline:0;text-transform: uppercase;" ui-sref-active="active" ui-sref="app.signup" show-authed="false"><small><b>{{ 'HEADER_SIGNUP_BUTTON' | translate }}</b></small></a></li>
 
         <li ng-show="$ctrl._DataBridge.accountData.meta && $ctrl._DataBridge.accountData.account"><a ui-sref-active="active" ui-sref="app.account" show-authed="true">Account</a></li>
-        <li style="display:none"><a style="outline:0;cursor:default;" show-authed="true" show-block-height></a></li>
         <li ng-show="$ctrl._Wallet.currentAccount.label"><a>{{ $ctrl._Wallet.currentAccount.label }}</a></li>
         <li><a style="outline:0;cursor:pointer;border-right:none;" show-authed="true" ng-click="$ctrl.logout()"><i class="fa fa-sign-out"></i> <small><b>{{$ctrl.walletName}}</small></b></a></li>
       </ul>
