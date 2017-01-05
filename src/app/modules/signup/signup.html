@@ -1,0 +1,185 @@
+<div class="signup-page">
+
+  <div class="loading-overlay" ng-show="$ctrl.okPressed">
+        <div class="loader text-center">
+            <img src="images/logomark.png" class="loader-image"/>
+            <p class="loading-text">{{ 'GENERAL_PROCESSING' | translate }}</p>
+        </div>
+    </div>
+
+  <div class="container">
+
+    <div class="text-center" style="margin-bottom:15px;">
+      <h1 style="color:white;font-weight:bold;">{{'SIGNUP_TITLE' | translate}}</h1>
+      <br>
+        <button class="btn btn-default" style="opacity: 1;outline:0;" ng-class="{active: $ctrl._selectedType.type == 1}" ng-click="$ctrl.changeWalletType(1)">{{'SIGNUP_CREATE_WALLET_TITLE' | translate}}</button>
+        <button class="btn btn-default" style="opacity: 1;outline:0;" ng-class="{active: $ctrl._selectedType.type == 2}" ng-click="$ctrl.changeWalletType(2)">{{'SIGNUP_BRAIN_WALLET_TITLE' | translate}}</button>
+        <button class="btn btn-default" style="opacity: 1;outline:0;" ng-class="{active: $ctrl._selectedType.type == 3}" ng-click="$ctrl.changeWalletType(3)">{{'SIGNUP_PRIVATE_KEY_WALLET_TITLE' | translate}}</button>
+      </div>
+
+    <div class="row">
+    <div class="col-md-8 col-md-offset-2" ng-show="$ctrl._selectedType.type == 1">
+
+      <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#444;color:white;">
+              <i class="fa fa-plus-circle"></i> {{'SIGNUP_CREATE_WALLET_TITLE' | translate}}
+            </div>
+            <p class="bg-danger" style="padding:10px;margin:0;"><i class="fa fa-exclamation-triangle"></i> <span ng-bind-html="'SIGNUP_CREATE_WALLET_WARNING' | translate"></span></p>
+            <div class="panel-body">
+             <form>
+          <fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="text"
+                placeholder="{{'FORM_WALLET_NAME_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.walletName"/>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_SIGNUP_PASSWORD_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.password"/>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_CONFIRM_PASSWORD_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.confirmPassword"/>
+            </fieldset>
+
+            <fieldset class="form-group">
+            <select class="form-control" style="width:100%;" ng-model="$ctrl.network" ng-change="$ctrl.changeNetwork($ctrl.network)" ng-options="network.id as (network.id | toNetworkName) for network in $ctrl.networks"><option value="" disabled selected>{{'SIGNUP_NETWORK_SELECT' | translate}}</option></select>
+            </fieldset>                                       
+
+            <button class="btn btn-success pull-xs-right"
+              type="submit" ng-click="$ctrl.createWallet()">
+              {{'SIGNUP_CREATE_WALLET_BUTTON' | translate}}
+            </button>
+
+          </fieldset>
+        </form>
+
+            </div>
+          </div>
+
+  </div>
+
+  <div class="col-md-8 col-md-offset-2" ng-show="$ctrl._selectedType.type == 2">
+
+     <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#444;color:white;">
+              <i class="fa fa-plus-circle"></i> {{'SIGNUP_BRAIN_WALLET_TITLE' | translate}}
+            </div>
+            <p class="bg-danger" style="padding:10px;margin:0;"><i class="fa fa-exclamation-triangle"></i> <span ng-bind-html="'SIGNUP_BRAIN_WALLET_WARNING' | translate"></span></p>
+            <div class="panel-body">
+               <form>
+          <fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="text"
+                placeholder="{{'FORM_WALLET_NAME_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.walletName" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_PASSPHRASE_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.password" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_CONFIRM_PASSPHRASE_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.confirmPassword" />
+            </fieldset>
+
+            <fieldset class="form-group">
+            <select class="form-control" style="width:100%;" ng-model="$ctrl.network" ng-change="$ctrl.changeNetwork($ctrl.network)" ng-options="network.id as (network.id | toNetworkName) for network in $ctrl.networks"><option value="" disabled selected>{{'SIGNUP_NETWORK_SELECT' | translate}}</option></select>
+            </fieldset>                                       
+
+            <button class="btn btn-success pull-xs-right"
+              type="submit" ng-click="$ctrl.createBrainWallet()">
+              {{'SIGNUP_BRAIN_WALLET_BUTTON' | translate}}
+            </button>
+
+          </fieldset>
+        </form>
+            </div>
+          </div>
+
+  </div>
+
+  <div class="col-md-8 col-md-offset-2" ng-show="$ctrl._selectedType.type == 3">
+
+    <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#444;color:white;">
+              <i class="fa fa-plus-circle"></i> {{'SIGNUP_PRIVATE_KEY_WALLET_TITLE' | translate}}
+            </div>
+             <p class="bg-danger" style="padding:10px;margin:0;"><i class="fa fa-exclamation-triangle"></i> <span ng-bind-html="'SIGNUP_PRIVATE_KEY_WALLET_WARNING' | translate"></span></p>
+            <div class="panel-body">
+              <form>
+          <fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="text"
+                placeholder="{{'FORM_WALLET_NAME_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.walletName" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_SIGNUP_PASSWORD_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.password" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_CONFIRM_PASSWORD_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.confirmPassword" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="text"
+                placeholder="{{'FORM_ADDRESS_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.address" />
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_PRIVATE_KEY_FIELD_PLACEHOLDER' | translate}}"
+                ng-model="$ctrl.formData.privateKey" />
+            </fieldset>
+
+            <fieldset class="form-group">
+            <select class="form-control" style="width:100%;" ng-model="$ctrl.network" ng-change="$ctrl.changeNetwork($ctrl.network)" ng-options="network.id as (network.id | toNetworkName) for network in $ctrl.networks"><option value="" disabled selected>{{'SIGNUP_NETWORK_SELECT' | translate}}</option></select>
+            </fieldset>
+
+            <button class="btn btn-success pull-xs-right"
+              type="submit" ng-click="$ctrl.createPrivateKeyWallet()">
+              {{'SIGNUP_PRIVATE_KEY_WALLET_BUTTON' | translate}}
+            </button>
+
+          </fieldset>
+        </form>
+            </div>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+
+<a id="downloadWallet" style="visibility:hidden" target="_blank"></a>
+
+</div>

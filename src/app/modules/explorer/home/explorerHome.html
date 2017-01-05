@@ -1,0 +1,98 @@
+<div class="explorer-home-page">
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-globe"></i> {{ 'EXPLORER_HOME_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  	<explorer-nav></explorer-nav>
+
+    <div class="col-md-3">
+
+       <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-at"></i> {{ 'EXPLORER_HOME_NS' | translate }}
+        </div>
+        <div class="panel-body" style="padding:0px;">
+
+          <ul class="list-group" ng-repeat="namespace in $ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]" ng-show="$ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]" style="margin-bottom: 0px;">
+            <li class="list-group-item" style="margin-left: 0px; width: 100%; border-radius: 0px;">{{namespace.fqn}}</li>
+          </ul>
+          <p ng-show="!$ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]" style="padding: 15px; margin-bottom: 0px;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default" ng-show="$ctrl._DataBridge.accountData.meta.cosignatoryOf.length">
+        <div class="panel-heading">
+         <i class="fa fa-at"></i> {{ 'EXPLORER_HOME_NS_MULTISIG' | translate }}
+        </div>
+        <div class="panel-body" style="padding:0px;">
+          <div ng-repeat="multisig in $ctrl._DataBridge.accountData.meta.cosignatoryOf">
+             <ul class="list-group" ng-repeat="namespace in $ctrl._DataBridge.namespaceOwned[multisig.address]" ng-show="$ctrl._DataBridge.namespaceOwned[multisig.address]" style="margin-bottom: 0px;">
+            <li class="list-group-item" style="margin-left: 0px; width: 100%; border-radius: 0px;">{{namespace.fqn}}</li>
+            </ul>
+          </div>
+      </div>
+    </div>
+
+      </div>
+
+    <div class="col-md-9 noPaddingLeft">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-table"></i> {{ 'EXPLORER_HOME_MOSAICS' | translate }}
+        </div>
+         <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed">
+                <thead>
+                    <tr>
+                        <th>{{ 'GENERAL_NAME' | translate }}</th>
+                        <th>{{ 'MOSAIC_DEFINITION_QUANTITY' | translate }}</th>
+                        <th>{{ 'EXPLORER_HOME_MOSAICS_LEVY' | translate }}</th>
+                        <th>{{ 'GENERAL_LEVY' | translate }}</th>
+                    </tr>
+                </thead>
+            </table>
+        <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed" ng-show="$ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+                <tbody>
+            <tr ng-repeat="mos in $ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+              <td style="text-overflow: ellipsis; overflow: hidden;" title="{{mos.mosaicId.namespaceId}}:{{mos.mosaicId.name}}"><b>{{mos.mosaicId.namespaceId}}</b>:{{mos.mosaicId.name}}</td>
+              <td>{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[0]}}<span class="text-muted">.{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[1]}}</span></td>
+              <td><tag-levy mos="mos" tx="" mosaics="$ctrl._DataBridge.mosaicDefinitionMetaDataPair">
+                      <span ng-show="levy.type">
+                      <b>{{levy.mosaicId.namespaceId}}</b>:{{levy.mosaicId.name}}
+                    </span>
+                    <span ng-show="!levy.type">
+                        {{ 'GENERAL_NONE' | translate }}
+                      </span>
+                </tag-levy></td>
+                <td><tag-levy mos="mos" tx="" mosaics="$ctrl._DataBridge.mosaicDefinitionMetaDataPair">
+                    <span ng-show="levy.type === 1">
+                      I ({{mos | fmtLevyFee:tx.amount:levy:mosaics}})
+                    </span>
+                    <span ng-show="levy.type === 2">
+                      II (x{{(levy.fee / 10000).toFixed(4)}})
+                    </span>
+                    <span ng-show="!levy.type">
+                        {{ 'GENERAL_NONE' | translate }}
+                      </span>
+                </tag-levy></td>
+            </tr>
+          </tbody>
+        </table>
+          <div class="panel-body" ng-show="!$ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+            <div class="panel-footer text-center" style="background-color: #e3e0cf; color: #444;border-top:1px solid #444;padding:0;">
+              <small><i><b>{{ 'GENERAL_LEVY_TYPES' | translate }}: {{ 'GENERAL_LEVY_TYPES_NOTE' | translate }}</b></i></small>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+</div>
+

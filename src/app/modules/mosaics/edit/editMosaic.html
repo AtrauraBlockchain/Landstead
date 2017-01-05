@@ -1,0 +1,157 @@
+<div class="create-mosaic-page">
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-hashtag"></i> {{ 'MOSAIC_SUPPLY_CHANGE_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  	<div class="col-md-6">
+   <div class="panel panel-default">
+            <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;">
+              <i class="fa fa-chevron-right"></i> 
+              <span ng-show="!$ctrl.formData.isMultisig">{{ 'MOSAIC_SUPPLY_CHANGE_NAME' | translate }}</span>
+              <span ng-show="$ctrl.formData.isMultisig">{{ 'MOSAIC_SUPPLY_CHANGE_MULTISIG_NAME' | translate }}</span>
+              <ul class="nav nav-tabs" style="float:right">
+                <li ng-class="$ctrl.formData.isMultisig ? '' : 'active'"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isMultisig = false;$ctrl.updateCurrentAccountMosaics()">{{ 'GENERAL_TAB_NORMAL' | translate }}</a></li>
+                <li ng-show="$ctrl._DataBridge.accountData.meta.cosignatoryOf.length" ng-class="$ctrl.formData.isMultisig ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isMultisig = true;$ctrl.updateCurrentAccountMosaics()">{{ 'GENERAL_TAB_MULTISIG' | translate }}</a></li>
+              </ul>
+            </div>
+            <div class="panel-body">
+            	 <fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}"
+                ng-model="$ctrl.common.password"/>
+            </fieldset>
+
+            <fieldset class="form-group" ng-show="$ctrl.formData.isMultisig">
+             <select class="form-control" ng-options="acc.address for acc in $ctrl._DataBridge.accountData.meta.cosignatoryOf track by acc.address" ng-model="$ctrl.formData.multisigAccount" ng-change="$ctrl.updateCurrentAccountMosaics()">
+            </select>
+            </fieldset>
+
+            <fieldset class="form-group" ng-show="$ctrl.formData.isMultisig && $ctrl.formData.multisigAccount">
+                            <div class="input-group">
+                              <span class="input-group-btn">
+                           <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{'FORM_SIDE_BTN_BALANCE' | translate }}</button>
+                        </span>
+                                <input class="form-control" style="text-align:right;" type="text" value="{{ ($ctrl.formData.multisigAccount.balance | fmtNemValue)[0] }}.{{ ($ctrl.formData.multisigAccount.balance | fmtNemValue)[1] }}" readOnly/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled><small>XEM</small></button>
+                                </span>
+                            </div>
+                        </fieldset>
+
+            <fieldset class="form-group">
+              <label>{{ 'MOSAIC_SUPPLY_CHANGE_SELECT' | translate }}</label>
+            	<select class="col-sm-7 form-control" ng-options="mosaicName for mosaicName in $ctrl.currentAccountMosaicNames" ng-model="$ctrl.selectedMosaic" ng-change="$ctrl.updateMosaic()">
+                </select>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <label>{{ 'MOSAIC_SUPPLY_CHANGE_TYPE' | translate }}</label><br>
+              <div class="col-md-6">
+                        <label>
+                            <input type="radio" ng-model="$ctrl.formData.supplyType" ng-value="1"> {{ 'MOSAIC_SUPPLY_CHANGE_TYPE_1' | translate }}
+                        </label>
+              </div>
+               <div class="col-md-6">
+                        <label>
+                            <input type="radio" ng-model="$ctrl.formData.supplyType" ng-value="2"> {{ 'MOSAIC_SUPPLY_CHANGE_TYPE_2' | translate }}
+                        </label>
+                    </div>
+            </fieldset>
+
+             <fieldset class="form-group">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'FORM_SIDE_BTN_TX_FEE' | translate }}</button>
+                </span>
+                <p style="display: table-cell; vertical-align: middle; border: 1px solid rgb(68, 68, 68);background-color:#fff;text-align:right;">
+                  <span style="margin-right:10px;">
+                    <span ng-show="$ctrl.formData.isMultisig">{{($ctrl.formData.innerFee | fmtNemValue)[0]}}.{{($ctrl.formData.innerFee | fmtNemValue)[1]}} +</span>
+                  <span>{{($ctrl.formData.fee | fmtNemValue)[0]}}.{{($ctrl.formData.fee | fmtNemValue)[1]}}</span>
+                </span>
+                </p>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled><small>XEM</small></button>
+                </span>
+              </div>
+            </fieldset> 
+
+             <button class="btn btn-success pull-xs-right"
+              type="submit" style="width:100%;" ng-disabled="$ctrl.okPressed || !$ctrl.common.password.length || !$ctrl.formData.delta || $ctrl.selectedMosaic == 'nem:xem'" ng-click="$ctrl.send()">
+              <i class="fa fa-send"></i> {{ 'GENERAL_SEND' | translate }}
+            </button>                               
+
+        </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 noPaddingLeft">
+
+       <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-cog"></i> {{ 'MOSAIC_SUPPLY_CHANGE_SUPPLY' | translate }}
+        </div>
+        <div class="panel-body">
+
+          <fieldset class="form-group">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'MOSAIC_SUPPLY_CHANGE_CURRENT_SUPPLY' | translate }}</button>
+                </span>
+                <p style="display: table-cell; vertical-align: middle; border: 1px solid rgb(68, 68, 68);background-color:#fff;text-align:right;">
+                  <span style="margin-right:10px;">
+                     <strong>{{$ctrl._DataBridge.mosaicDefinitionMetaDataPair[$ctrl.selectedMosaic].supply}}</strong>
+                        <span class="text-muted">.{{(0 | fmtSupply:$ctrl._DataBridge.mosaicOwned[$ctrl.currentAccount][$ctrl.selectedMosaic].mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[1]}}</span>
+                </span>
+                </p>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;text-transform: uppercase;" disabled><small>{{ $ctrl.selectedMosaic }}</small></button>
+                </span>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <label>{{ 'MOSAIC_SUPPLY_CHANGE_AMOUNT' | translate }}</label>
+                <input autofocus="autofocus" type="number" class="form-control" ng-model="$ctrl.formData.delta" min="0">
+            </fieldset>
+
+            <fieldset class="form-group">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'MOSAIC_SUPPLY_CHANGE_RES_SUPPLY' | translate }}</button>
+                </span>
+                 <p style="display: table-cell; vertical-align: middle; border: 1px solid rgb(68, 68, 68);background-color:#fff;text-align:right">
+                  <span style="margin-right:10px;">
+                    <span ng-show="$ctrl.formData.supplyType === 1">
+                        <strong>{{($ctrl.formData.delta + $ctrl._DataBridge.mosaicDefinitionMetaDataPair[$ctrl.selectedMosaic].supply)}}</strong>
+                        <span class="text-muted">.{{(0 | fmtSupply:$ctrl._DataBridge.mosaicOwned[$ctrl.currentAccount][$ctrl.selectedMosaic].mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[1]}}</span>
+                </span>
+                <span ng-show="$ctrl.formData.supplyType === 2">
+                        <strong>{{(-$ctrl.formData.delta + $ctrl._DataBridge.mosaicDefinitionMetaDataPair[$ctrl.selectedMosaic].supply)}}</strong>
+                        <span class="text-muted">.{{(0 | fmtSupply:$ctrl._DataBridge.mosaicOwned[$ctrl.currentAccount][$ctrl.selectedMosaic].mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[1]}}</span>
+                </span>
+                </span>
+                </p>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;text-transform: uppercase;" disabled><small>{{ $ctrl.selectedMosaic }}</small></button>
+                </span>
+              </div>
+            </fieldset>
+
+      </div>
+    </div>
+
+      </div>
+
+  </div>
+
+</div>
+

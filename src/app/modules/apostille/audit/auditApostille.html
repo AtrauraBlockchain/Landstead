@@ -1,0 +1,113 @@
+<div class="audit-apostille-page">
+
+  <div class="loading-overlay" ng-show="$ctrl.isProcessing">
+        <div class="loader text-center">
+            <img src="images/logomark.png" class="loader-image"/>
+            <p class="loading-text">{{ 'GENERAL_PROCESSING' | translate }}</p>
+        </div>
+    </div>
+
+  <div class="banner-left">
+    <div class="container">
+
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+    <div class="col-xs-12 col-md-7">
+      <h2>{{ 'APOSTILLE_AUDIT_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>{{ 'APOSTILLE_AUDIT_FILES' | translate }}</h4>
+              <!-- <span ng-show="$ctrl.showInfo"><i class="fa fa-info-circle"></i> {{ 'GENERAL_INFORMATION' | translate }}</span> -->
+               <!-- <ul class="nav nav-tabs" style="float:right"> -->
+                <!-- <li ng-class="$ctrl.isFiles ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.isFiles = true;$ctrl.showInfo = false;"><i class="fa fa-files-o"></i></a></li> -->
+              <!--  <li ng-class="$ctrl.showInfo ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.isFiles = false;$ctrl.showInfo = true;"><i class="fa fa-info-circle"></i></a></li>
+              </ul> -->
+            </div>
+
+            <div ng-show="$ctrl.isFiles">
+            <div class="drop" style="width:100%;height:170px;background-color:white;">
+              <p style="padding-top:80px;"><b class="text-muted" style="color:#444;"><span class="fa fa-cloud-upload"></span> <i>{{ 'GENERAL_DROPBOX' | translate }}</i></b></p>
+              <input type="file" multiple class="upload" id="fileToNotary" style="width: 100%; position: relative; margin-top: -110px; height: 170px;" import-apostille-files="$ctrl.processFile($fileContent, $fileData)"/></div>
+          </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-sm-4">
+
+    <div class="panel panel-default">
+            <div class="panel-heading">
+             <h4>{{ 'APOSTILLE_AUDIT_CHOOSE_NODE' | translate }}</h4>
+            </div>
+            <div class="panel-body">
+              <p class="bg-info">{{ 'APOSTILLE_AUDIT_CHOOSE_NODE_NOTE' | translate }}</p>
+              <select ng-if="$ctrl._Wallet.network === $ctrl._Network.data.Mainnet.id" class="form-group form-control" ng-options="(node.uri | toHostname) for node in $ctrl._Nodes.mainnetSearchNodes" ng-model="$ctrl.searchNode" ng-change="$ctrl.getHeartBeat($ctrl.searchNode.uri)"></select>
+                <select ng-if="$ctrl._Wallet.network === $ctrl._Network.data.Testnet.id" class="form-group form-control" ng-options="(node.uri | toHostname) for node in $ctrl._Nodes.testnetSearchNodes" ng-model="$ctrl.searchNode" ng-change="$ctrl.getHeartBeat($ctrl.searchNode.uri)"></select>
+                  <select ng-if="$ctrl._Wallet.network === $ctrl._Network.data.Mijin.id" class="form-group form-control" ng-options="(node.uri | toHostname) for node in $ctrl._Nodes.mijinSearchNodes" ng-model="$ctrl.searchNode" ng-change="$ctrl.getHeartBeat($ctrl.searchNode.uri)"></select>
+              <p><b>{{ 'GENERAL_LOCATION' | translate }}:</b>  {{ $ctrl.searchNode.location }}</p>
+              <p><b>{{ 'GENERAL_STATUS' | translate }}:</b> <span ng-show="$ctrl.searchNodeStatus"><i class="fa fa-check" style="color:green;"></i></span>
+                <span ng-show="!$ctrl.searchNodeStatus"><i class="fa fa-times" style="color:red;"></i></span></p>
+            </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="panel-heading">
+      <h4>Apostille Format Example</h4>
+    </div>
+    <div class="panel-body">
+      <div>
+        <p><span ng-bind-html="'APOSTILLE_AUDIT_INFORMATION_1' | translate"></span><br> {{ 'APOSTILLE_AUDIT_INFORMATION_2' | translate }}</p>
+        <p><b>{{ 'GENERAL_EXAMPLE' | translate }}</b><br> <small>MyProject2016 - TBCI2A67UQZAKCR6NS4JWAEICEIGEIM72G3MVW5S -- <b>Apostille</b> TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date 2016-09-12.pdf</small></p>
+      </div>
+
+  </div>
+  </div>
+
+  <div class="col-sm-12">
+
+  	<div class="">
+            <div class="panel-heading">
+              <h4>{{ 'GENERAL_RESULTS' | translate }}</h4>
+              <div class="trash" title="{{ 'GENERAL_CLEAR_ALL' | translate }}" style="cursor:pointer;" ng-click="$ctrl.clearAll()">
+              <i class="fa fa-trash"></i> Remove Records Locally
+              </div>
+              <div style="float: right; position: relative; display: block;" ng-show="$ctrl.auditResults.length > 5"><button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+            </div>
+            <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                              <th>{{ 'APOSTILLE_FILENAME' | translate }}</th>
+                              <th>{{ 'GENERAL_OWNER' | translate }}</th>
+                              <th>{{ 'APOSTILLE_FILE_HASH' | translate }}</th>
+                              <th>{{ 'APOSTILLE_PRIVATE' | translate }}</th>
+                              <th>{{ 'GENERAL_RESULT' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color:white;text-align:center">
+                        <tr ng-repeat="file in $ctrl.auditResults | reverse | startFrom:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
+                            <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.filename}}</td>
+                            <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.owner}}</td>
+                            <td style="vertical-align: middle;border-bottom: 1px solid #444"><span ng-show="file.hash">{{file.fileHash}}</span></td>
+                            <td style="vertical-align: middle;word-break:normal;border-bottom: 1px solid #444"><span ng-show="file.private"><i class="fa fa-check" style="color:green;"></i></span><span ng-show="!file.private"><i class="fa fa-times" style="color:red;"></i></span></td>
+                            <td style="vertical-align: middle;word-break:normal;border-bottom: 1px solid #444"> <a ng-show="file.hash" href="{{$ctrl._Wallet.chainLink}}{{file.hash}}" target="_blank">{{file.result}}</a><span ng-show="!file.hash">{{file.result}}</span></td>
+                        </tr>
+                    </tbody>
+                    </table>
+                     <div ng-show="!$ctrl.auditResults.length">
+                        <p>{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+                    </div>
+    </div>
+
+  </div>
+
+</div>
+
+</div>

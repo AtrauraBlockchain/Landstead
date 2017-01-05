@@ -1,0 +1,504 @@
+.panel-heading {
+  background-color: transparent !important;
+  border-bottom: $borderUnderline;
+  padding-left: 0px;
+  padding-right: 0px;
+  // margin-left: $pad;
+  // margin-right: $pad;
+}
+
+/*** GLOBAL STYLES ***/
+table {
+  table-layout: auto;
+  word-break: break-all;
+}
+thead {
+  border-bottom: $borderUnderline;
+}
+tr {
+  border-bottom:1px solid $grayLite !important;
+}
+tbody {
+  border: none;
+  text-align: center;
+}
+td {
+  vertical-align: middle !important;
+}
+th {
+  color: black;
+  font-size: 13px;
+  min-width: 55px;
+  border-bottom: $borderUnderline;
+}
+select {
+  border: 1px solid $blueLite !important;
+  border-radius: none !important;
+}
+.bg-info {
+  background-color: $blueXLite;
+  padding: $pad / 2;
+  border: 1px solid $blueLite;
+  text-align: center;
+}
+.bg-danger {
+  padding:10px;
+  cursor:pointer;
+  margin-bottom:0;
+}
+.pointer {
+  cursor: pointer;
+  color: red;
+}
+.helper {
+  text-align: right;
+  cursor: pointer;
+  h4:hover{
+    color: $blue;
+  }
+}
+
+.input-group-btn {
+  min-width: 170px;
+  vertical-align: middle;
+}
+
+
+// confirmed/unconfirmed tabs, send/receive tabs
+.navbar-brand {
+  span:first-of-type {
+    font-weight: 100;
+  }
+  span:last-of-type {
+    font-weight: 900;
+  }
+}
+.nav-tabs li a:hover {
+	text-decoration: underline;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+		/*text-decoration: underline;*/
+    cursor: default;
+    background-color: $blue;
+		color: white;
+    padding-bottom: 12px;
+}
+
+.nav-tabs li a {
+	color: grey;
+  // background-color: $grayLite;
+}
+
+.nav-tabs {
+  // float: right;
+  position: relative;
+	border-bottom: none;
+}
+.tabDescription {
+  float: right;
+  position: relative;
+  // bottom: $pad;
+  padding-right: $pad;
+}
+button {
+  min-width: 140px;
+  width: 140px;
+  text-align: left;
+}
+.btn-default {
+  background: transparent;
+  color: black;
+  text-align: left;
+  font-weight: 700;
+  font-size: 16px;
+  border: 0px;
+  padding-top: 0px;
+}
+.input-group-btn:hover, .input-group-btn:focus, .input-group-btn:active {
+  background: transparent;
+  .btn:hover, .btn:active, .btn:focus {
+    background: transparent;
+    color: black;
+  }
+}
+.btn-success {
+  background-color: $blue;
+  border-color: $blue;
+}
+.btn-success:hover, .btn-success:active, .btn-success:focus {
+  background-color: $blueLite !important;
+  border-color: $blueLite !important;
+}
+
+/*** SEND/RECEIVE PAGE ***/
+
+.form-control {
+  border: 0px;
+  border-bottom: $borderUnderline;
+  box-shadow: none;
+  font-size: 16px;
+  min-width: 100%;
+}
+textarea {
+  // border: 2px !important;
+  border-bottom: $borderUnderline;
+  box-shadow: inherit;
+  max-height: 60px;
+}
+.form-control:focus {
+  box-shadow: none;
+}
+.checkboxes .col-md-6 {
+  text-align: center;
+}
+.fees {
+  border-bottom: $borderUnderline;
+  text-align: right;
+}
+
+.mosaic {
+  padding-top: $pad * 1.35;
+}
+
+/*** SERVICES/PORTAL PAGE ***/
+.portalWrap {
+  padding-left: $pad;
+  padding-right: $pad;
+
+}
+.portalWrap{
+  .row1 {
+    padding-bottom: $pad * 2;
+  }
+  .panel-heading {
+    border-bottom: 0px !important;
+    h5 {
+      font-size: 19px;
+      font-weight: 700;
+    }
+    i {
+      vertical-align: middle;
+    }
+    img {
+      width: 56px;
+      // vertical-align: bottom;
+
+    }
+    .col-sm-3 {
+      min-height: 60px;
+    }
+  }
+  .panel-body {
+    padding: 0px;
+    padding-top: $pad;
+    padding-bottom: $pad;
+    border-top: 1px solid $blue;
+    line-height: 1.1;
+    font-size: 13.5px;
+    color: rgba(0,0,0,0.4);
+    font-weight: 700;
+  }
+  .panelFooter {
+    background-color: transparent;
+    border: 0px;
+    box-shadow: none;
+    padding: 0px;
+    .btn {
+      text-decoration: underline !important;
+      color: $blue;
+      font-size: 13.5px;
+      padding: 0px !important;
+      margin: 0px !important;
+      text-align: left;
+      background-color: transparent;
+    }
+    .btn[disabled] {
+      color: rgba(0,0,0,0.7);
+    }
+  }
+}
+
+/*** CREATE MOSAIC PAGE ***/
+.create-mosaic-page {
+
+}
+/*** CREATE NAMESPACE PAGE ***/
+// .dualFees {
+//   text-align: center !important;
+//   .col-md-6 span{
+//     color: pink;
+//     text-align: center !important;
+//   }
+// }
+.feeAmount{
+  vertical-align: bottom !important;
+}
+
+
+
+
+/*** DASHBOARD PAGE/ MAIN STYLINGS PAGE ***/
+
+.dashboard-page, .transferTransaction-page, .services-page, .create-mosaic-page, .audit-apostille-page, .create-apostille-page, .namespace-provision-page{
+	background-color: white;
+}
+.dashboard-page .container{
+	margin-left: 0px;
+	padding-left: 0px;
+}
+// container for main heading on page, h2
+.dashboard-page .banner-left, .transferTransaction-page .banner-left, .banner-left {
+	padding-bottom: 0px;
+	background-color: transparent;
+  padding-top: $pad / 2;
+}
+// main heading on page, h2
+.dashboard-page h2, .transferTransaction-page h2, h2 {
+	color: rgba(0, 0, 0, 0.3);
+	font-size: 55px;
+	font-weight: 100;
+  text-align: left;
+}
+
+.dashboard-page .updates {
+	max-width: 400px;
+}
+.dashboard-page .updates p {
+	font-size: 12px;
+}
+.dashboard-page .updates a{
+	color: $blue;
+	text-decoration: underline;
+	font-weight: 500;
+}
+.dashboard-page .updates h3{
+	max-width: 250px;
+}
+.dashboard-page th {
+	font-weight: inherit;
+}
+
+.dashboard-page .container .row {
+	margin-top: 10px;
+}
+
+.dashboard-page .accordion-inner .row {
+	margin-top: 0px;
+	margin-right: 0px;
+}
+
+.dashboard-page .well {
+	border-radius: 0px;
+	background-color: #fff;
+	border-top: 3px solid #444;
+}
+
+.dashboard-page .well h4 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.dashboard-page .well h4 small {
+	color: #444;
+}
+
+.dashboard-page .panel-default > .panel-heading {
+    background-color: transparent;
+    border-radius: 0px;
+    border-bottom: $borderUnderline;
+}
+.dashboard-page .panel-heading h4 {
+	color: black;
+	font-weight: 700;
+	font-size: 20px;
+}
+/*** APOSTILLE AUDIT PAGE ***/
+
+.audit-apostille-page {
+  .trash {
+    float: right;
+    position: relative;
+    bottom: $pad;
+    font-family: 'Roboto';
+    display: block;
+    color: $gray;
+    font-weight: 700;
+  }
+
+
+
+
+
+
+  // .drop {
+  //   height: 100px;
+  //   width: 100%;
+  //   margin: 0 auto;
+  //   background-color: white;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   text-align: center;
+  // }
+  // i{
+  //   z-index: -100;
+  // }
+  // #fileNotary {
+  //   width: 100%;
+  //   position: relative;
+  //   margin-top: -110px;
+  //   height: 170px;
+  //   z-index: 1000;
+  // }
+}
+
+
+
+
+/*** APOSTILLE ADD PAGE ***/
+.rejected {
+  float: right;
+}
+.addApostilleFile {
+  .nav-tabs {
+    // position: relative;
+  }
+}
+
+
+
+/*** DROPBOX GLOBAL STYLES ***/
+.drop {
+    border: 1px dashed rgb(0, 166, 90);
+    /*width: 450px;*/
+    min-height: 35px;
+    /*margin: 10px auto;*/
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    display:box;
+    /*cursor:pointer;*/
+    text-align: center;
+}
+.drop input.upload {
+    position: absolute;
+    top: 0;
+    /*right: 0;*/
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.drop input.upload[disabled] {
+    cursor: not-allowed;
+}
+
+
+
+/*** MARKET INFO WIDGET ***/
+.market-info .header{
+	color: rgba(0, 0, 0, 0.3);
+	font-size: 12px;
+	font-weight: 700;
+}
+.market-info h4 {
+  margin-bottom: $pad * 2;
+}
+.market-info .header span{
+	font-weight: 900;
+	font-size: 16px;
+	color: black;
+}
+.market-info .ticker {
+	padding-top: 20px;
+}
+.market-percent .col-md-4:first-of-type {
+	text-align: left;
+	padding-left: 0px;
+}
+.market-percent .col-md-4:nth-of-type(2) {
+	text-align: center;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.market-percent .col-md-4:last-of-type {
+	text-align: right;
+	padding-right: 0px;
+}
+
+
+
+
+
+
+
+
+/*** basic styles ***/
+
+// body { margin: 30px; }
+// h1 { font-size: 1.5em; }
+label {
+  font-size: 16px;
+}
+// label:active. label:focus{
+//   color: $blue;
+// }
+// div {
+//   width: 175px;
+//   margin-left: 20px;
+// }
+
+/*** custom checkboxes ***/
+
+input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+input[type=checkbox] + label:before {
+  font-family: FontAwesome;
+  display: inline-block;
+}
+
+input[type=checkbox] + label:before { content: "\f096"; } /* unchecked icon */
+input[type=checkbox] + label:before { letter-spacing: 10px; } /* space between checkbox and label */
+
+input[type=checkbox]:checked + label:before { content: "\f046"; } /* checked icon */
+input[type=checkbox]:checked + label:before { letter-spacing: 8px; } /* allow space for check mark */
+
+
+
+
+
+
+
+
+
+
+// table thead, table tr td{
+// 	background-color: transparent;
+// 	border: 0px;
+// }
+// table th:first-child, table th:nth-of-type(2), table th:nth-of-type(3), table th:nth-of-type(4){
+// 	border-bottom: 2px solid $blue !important;
+// }
+// /* Target account */
+// table th:first-child, table td:nth-of-type(2) {
+// 	text-align: left;
+// 	width: 44%;
+// }
+// /* Targeting amount */
+// table th:nth-of-type(2), table td:nth-of-type(4) {
+// 	text-align: left;
+// 	width: 14%;
+// }
+// /* Targeting message */
+// table th:nth-of-type(3), table td:nth-of-type(6) {
+// 	text-align: left;
+// 	width: 19%;
+// }
+// /* Targeting date */
+// table th:nth-of-type(4), table td:nth-of-type(8) {
+// 	text-align: left;
+// 	width: 23%;
+// }

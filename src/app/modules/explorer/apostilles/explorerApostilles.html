@@ -1,0 +1,68 @@
+<div class="explorer-home-page">
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-globe"></i> {{ 'EXPLORER_APOSTILLES_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  	<explorer-nav></explorer-nav>
+   
+    <div class="col-md-12">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-table"></i> {{ 'EXPLORER_APOSTILLES_PUBLIC' | translate }}
+          <div style="float: right; position: relative; display: block;" ng-show="$ctrl.sinkData.length > 5"><button class="buttonStyle" ng-disabled="$ctrl.currentPageSink == 0" ng-click="$ctrl.currentPageSink = $ctrl.currentPageSink-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageSink+1}}/{{$ctrl.numberOfPagesSink()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageSink+1 >= $ctrl.numberOfPagesSink()" ng-click="$ctrl.currentPageSink = $ctrl.currentPageSink+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+        </div>
+         <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed">
+                <thead>
+                    <tr>
+                      <th>{{ 'GENERAL_OWNER' | translate }}</th>
+                      <th>{{ 'APOSTILLE_FILE_HASH' | translate }}</th>
+                      <th>{{ 'GENERAL_TRANSACTION_HASH' | translate }}</th>
+                      <th>{{ 'GENERAL_DATE' | translate }}</th>
+                    </tr>
+                </thead>
+            </table>
+        <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed">
+          <tbody>
+            <tr ng-repeat="tx in $ctrl.sinkData | startFrom:$ctrl.currentPageSink*$ctrl.pageSizeSink | limitTo:$ctrl.pageSizeSink">
+              <td style="vertical-align: middle;border-bottom: 1px solid #444;word-break: break-all;text-align:middle;">
+                <a ui-sref="app.accountsExplorer({address: (tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network), privateKey: ''})">{{tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network}}</a></td>
+              <td style="vertical-align: middle;border-bottom: 1px solid #444;word-break: break-all;text-align:justify;"> 
+                <span ng-show="tx.transaction.type === 257">
+                  {{ tx.transaction.message.payload }}
+                </span>
+                <span ng-show="tx.transaction.type === 4100">
+                  {{ tx.transaction.otherTrans.message.payload }}
+                </span>
+              </td>
+              <td style="vertical-align: middle;border-bottom: 1px solid #444;word-break: break-all;text-align:justify;">
+                <span ng-show="tx.transaction.type === 257">
+                  <a href="{{$ctrl._Wallet.chainLink}}{{tx.meta.hash.data}}" target="_blank">
+                    {{tx.meta.hash.data}}
+                  </a>
+                </span>
+                <span ng-show="tx.transaction.type === 4100">
+                  <a href="{{$ctrl._Wallet.chainLink}}{{tx.meta.innerHash.data}}" target="_blank">
+                    {{ tx.meta.innerHash.data }}
+                  </a>
+                </span>
+              </td> 
+              <td style="vertical-align: middle;border-bottom: 1px solid #444;">{{tx.transaction.timeStamp | fmtNemDate}}</td>
+            </tr>
+          </tbody>
+        </table>
+          <div class="panel-body" ng-show="!$ctrl.sinkData.length">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+</div>
+

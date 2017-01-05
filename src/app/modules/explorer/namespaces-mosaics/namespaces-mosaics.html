@@ -1,0 +1,140 @@
+<div class="explorer-namespaces-mosaics-page">
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-globe"></i> {{ 'EXPLORER_NS_MOS_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  	<explorer-nav></explorer-nav>
+
+    <div class="col-md-3">
+
+     <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-stop"></i> {{ 'GENERAL_NAMESPACES' | translate }}
+          <div style="float: right; position: relative; display: block;" ng-show="$ctrl.namespaces.length > 10 && !$ctrl.searchText"><button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="panel-body" style="padding:0px;" ng-show="$ctrl.namespaces.length">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled><i class="fa fa-search"></i></button>
+            </span>
+            <input class="form-control" ng-model="$ctrl.searchText" type="text" placeholder="{{ 'EXPLORER_NS_MOS_SEARCH' | translate }}">
+          </div>
+          <ul class="list-group" ng-repeat="ns in $ctrl.namespaces | orderBy:'namespace.fqn' | filter:$ctrl.searchNsInArray($ctrl.searchText) | startFrom:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize" style="margin-bottom: 0px;">
+            <li class="list-group-item" ng-class="$ctrl.selectedNamespaceName === ns.namespace.fqn ? 'active' : ''" style="margin-left: 0px; width: 100%; border-radius: 0px;word-break: break-all;cursor:pointer;" ng-click="$ctrl.getSubNamespaces(ns.namespace.owner, ns.namespace.fqn);$ctrl.getMosaics(ns.namespace.owner, ns.namespace.fqn)">{{ns.namespace.fqn}}</li>
+          </ul>
+      </div>
+      <div class="panel-body" ng-show="!$ctrl.namespaces.length">
+        <p style="margin-bottom: 0px;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+
+      </div>
+
+      <div class="col-md-3">
+
+     <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-th-large"></i> {{ 'GENERAL_SUB_NAMESPACES' | translate }}
+          <div style="float: right; position: relative; display: block;" ng-show="$ctrl.subNamespaces.length > 10"><button class="buttonStyle" ng-disabled="$ctrl.currentPageSubNs == 0" ng-click="$ctrl.currentPageSubNs = $ctrl.currentPageSubNs-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageSubNs+1}}/{{$ctrl.numberOfPagesSubNs()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageSubNs+1 >= $ctrl.numberOfPagesSubNs()" ng-click="$ctrl.currentPageSubNs = $ctrl.currentPageSubNs+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="panel-body" style="padding:0px;" ng-show="$ctrl.subNamespaces.length" >
+          <ul class="list-group" ng-repeat="ns in $ctrl.subNamespaces | orderBy:'fqn' | startFrom:$ctrl.currentPageSubNs*$ctrl.pageSize | limitTo:$ctrl.pageSize" style="margin-bottom: 0px;">
+            <li class="list-group-item" ng-class="$ctrl.selectedSubNamespaceName === ns.fqn ? 'active' : ''" style="margin-left: 0px; width: 100%; border-radius: 0px;word-break: break-all;cursor:pointer;" ng-click="$ctrl.getMosaics(ns.owner, ns.fqn)">{{ $ctrl.substringSubNs(ns.fqn) }}</li>
+          </ul>
+      </div>
+      <div class="panel-body" ng-show="!$ctrl.subNamespaces.length">
+        <p style="margin-bottom: 0px;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+
+      </div>
+
+      <div class="col-md-3">
+
+     <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-th"></i> {{ 'GENERAL_MOSAICS' | translate }}
+          <div style="float: right; position: relative; display: block;" ng-show="$ctrl.mosaics.length > 10"><button class="buttonStyle" ng-disabled="$ctrl.currentPageMos == 0" ng-click="$ctrl.currentPageMos = $ctrl.currentPageMos-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageMos+1}}/{{$ctrl.numberOfPagesMos()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageMos+1 >= $ctrl.numberOfPagesMos()" ng-click="$ctrl.currentPageMos = $ctrl.currentPageMos+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="panel-body" style="padding:0px;" ng-show="$ctrl.mosaics.length" >
+          <ul class="list-group" ng-repeat="mos in $ctrl.mosaics | orderBy:'id.name' | startFrom:$ctrl.currentPageMos*$ctrl.pageSize | limitTo:$ctrl.pageSize" style="margin-bottom: 0px;">
+            <li class="list-group-item" ng-class="$ctrl.selectedMosaicName === mos.id.namespaceId + ':' + mos.id.name ? 'active' : ''" style="margin-left: 0px; width: 100%; border-radius: 0px;word-break: break-all;cursor:pointer;" ng-click="$ctrl.processMosaic(mos)">{{mos.id.name}}</li>
+          </ul>
+      </div>
+      <div class="panel-body" ng-show="!$ctrl.mosaics.length">
+        <p style="margin-bottom: 0px;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+
+      </div>
+
+      <div class="col-md-3">
+
+     <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-th-list"></i> {{ $ctrl.selectedMosaicName }}
+        </div>
+        <div class="panel-body" style="padding:0px;" ng-show="$ctrl.selectedMosaic" >
+          <p class="bg-info" style="padding:10px;margin:0;word-break: inherit;">{{ $ctrl.selectedMosaic.description }}</p>
+          <table class="table table-bordered table-hover" style="border:1px solid #444;table-layout:fixed;margin-bottom: 0;">
+                <thead style="color:white;">
+                    <tr>
+                        <th>{{ 'GENERAL_NAME' | translate }}</th>
+                        <th>{{ 'GENERAL_VALUE' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:white;text-align:center">
+                    <tr>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'MOSAIC_DEFINITION_QUANTITY' | translate }}</td>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{$ctrl.selectedMosaic.properties[1].value}}</td>
+                      </tr>
+                      <tr>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'MOSAIC_DEFINITION_DIV' | translate }}</td>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{$ctrl.selectedMosaic.properties[0].value}}</td>
+                      </tr>
+                      <tr ng-show="$ctrl.selectedMosaic.levy.type">
+                         <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'EXPLORER_HOME_MOSAICS_LEVY' | translate }}</td>
+                         <td style="vertical-align:middle;border-bottom:1px solid orange;">
+                            <span>
+                                    {{$ctrl.selectedMosaic.levy.mosaicId.namespaceId}}:{{$ctrl.selectedMosaic.levy.mosaicId.name}}
+                            </span>
+                          </td>
+                      </tr>
+                      <tr ng-show="$ctrl.selectedMosaic.levy.type">
+                          <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'MOSAIC_DEFINITION_LEVY_FEE_TYPE' | translate }}</td>
+                          <td style="vertical-align:middle;border-bottom:1px solid orange;">
+                           <span ng-show="$ctrl.selectedMosaic.levy.type === 1"> 
+                              {{ 'MOSAIC_DEFINITION_LEVY_FEE_TYPE_1' | translate }} ({{$ctrl.selectedMosaic | fmtLevyFee:1:$ctrl.selectedMosaic.levy:$ctrl.selectedMosaicMetaDatapair}})
+                            </span>
+                            <span ng-show="$ctrl.selectedMosaic.levy.type === 2">
+                              {{ 'MOSAIC_DEFINITION_LEVY_FEE_TYPE_1' | translate }} (x{{($ctrl.selectedMosaic.levy.fee / 10000).toFixed(4)}})
+                            </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'MOSAIC_DEFINITION_MUTABLE_SUPPLY' | translate }}</td>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{$ctrl.selectedMosaic.properties[2].value}}</td>
+                      </tr>
+                      <tr>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{ 'MOSAIC_DEFINITION_TRANSFERABLE' | translate }}</td>
+                        <td style="vertical-align:middle;border-bottom:1px solid orange;">{{$ctrl.selectedMosaic.properties[3].value}}</td>
+                    </tr>
+                </tbody>
+            </table>
+      </div>
+      <div class="panel-body" ng-show="!$ctrl.selectedMosaic">
+        <p style="margin-bottom: 0px;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+
+      </div>
+
+    </div>
+
+</div>
+

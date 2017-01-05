@@ -1,0 +1,44 @@
+<div class="Landstead-page">
+
+	<div class="banner-left">
+		<div class="container">
+		<h2><i class="fa fa-hashtag"></i> Citizen Registration</h2>
+		</div>
+	</div>
+
+	<div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+		<!-- Your content here -->
+		<div class="col-md-6" style="margin-top:10px">
+			<div class="panel panel-default">
+				<div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;">
+					<i class="fa fa-chevron-right"></i> Register a citizen on the blockchain
+				</div>
+				<div class="panel-body">
+					<label>Input the citizen's Identification Number</label><br/>
+					<input type="text" class="form-control" ng-model="$ctrl.formData.citizenID" value=""></input>
+					<br/>
+
+					<label>Input the citizen's Account</label><br/>
+					<input type="text" class="form-control" ng-model="$ctrl.formData.citizenAccount" value=""></input>
+					<br/>
+
+					<button ng-click="$ctrl.submitCitizen()" ng-disabled="$ctrl.okPressed">Send</button>
+
+					<ul>
+						<li>BW seed: {{ $ctrl.formData.citizenID }}:{{ $ctrl.country}}</li>
+
+						<li ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
+						<li ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
+						<li ng-if="$ctrl.step.cpLinked">cpLinked</li>
+						<li ng-if="$ctrl.step.tokensToCP">tokensToCP</li>
+						<li ng-if="$ctrl.step.tokensToC">tokensToC</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+

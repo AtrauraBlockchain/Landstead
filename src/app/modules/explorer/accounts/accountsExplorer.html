@@ -1,0 +1,112 @@
+<div class="explorer-home-page">
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-globe"></i> {{'ACCOUNTS_EXPLORER_TITLE' | translate}}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  	<explorer-nav></explorer-nav>
+
+    <div class="col-md-12">
+      <fieldset class="form-group">
+        <div class="input-group">
+          <span class="input-group-btn">
+             <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled><i class="fa fa-search"></i></button>
+          </span> 
+          <input type="text" class="form-control" ng-model="$ctrl.rawInput" ng-model-options="{debounce:500}" placeholder="{{'FORM_ADDRESS_ALIAS_PLACEHOLDER' | translate}}" ng-change="$ctrl.processRawInput()"/>
+        </div> 
+      </fieldset>
+    </div>
+
+    <div class="col-md-5">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-chevron-right"></i> {{ 'ACCOUNT_ACCOUNT_INFORMATION' | translate }}
+        </div>
+        <div class="panel-body" ng-show="$ctrl.scope.accountData.account">
+          <fieldset class="form-group">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'GENERAL_ADDRESS' | translate }}</button>
+              </span>
+              <input type="text" class="form-control" value="{{ $ctrl.scope.accountData.account.address }}" readOnly/> 
+            </div>
+          </fieldset>
+          <fieldset class="form-group">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'FORM_SIDE_BTN_BALANCE' | translate }}</button>
+              </span>
+              <input type="text" class="form-control" value="{{ ($ctrl.scope.accountData.account.balance | fmtNemValue)[0] }}.{{ ($ctrl.scope.accountData.account.balance | fmtNemValue)[1] }}" readOnly/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>XEM</button>
+              </span>
+            </div>
+          </fieldset>
+          <fieldset class="form-group">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'GENERAL_PUBLIC_KEY' | translate }}</button>
+              </span>
+              <input type="text" class="form-control" value="{{ $ctrl.scope.accountData.account.publicKey ? $ctrl.scope.accountData.account.publicKey : '' }}" readOnly/> 
+            </div>
+          </fieldset> 
+          <fieldset class="form-group">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'GENERAL_IMPORTANCE' | translate }}</button>
+              </span>
+              <input type="text" class="form-control" value="{{ ($ctrl.scope.accountData.account.importance | fmtNemImportanceScore)[0] }}.{{ ($ctrl.scope.accountData.account.importance | fmtNemImportanceScore)[1] }}" readOnly/> 
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>* 10<sup>(-5)</sup></button>
+              </span>
+            </div>
+          </fieldset>        
+        </div>
+        <div class="panel-body" ng-show="!$ctrl.scope.accountData.account">
+            <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+     <div class="col-md-7">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-chevron-right"></i> {{ 'GENERAL_TRANSACTIONS' | translate }}
+           <div style="float: right; position: relative; display: block;" ng-show="$ctrl.transactions.length > 5"><button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="panel-body" style="padding:0;" ng-show="$ctrl.transactions.length">
+          <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed;margin-bottom:0;">
+                <thead>
+                    <tr>
+                        <th>{{ 'GENERAL_ACCOUNT' | translate }}</th>
+                        <th>{{ 'GENERAL_AMOUNT' | translate }}</th>
+                        <th>{{ 'GENERAL_MESSAGE' | translate }}</th>
+                        <th>{{ 'GENERAL_DATE' | translate }}</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed;margin-bottom:0;">
+                <tbody>
+                  <div>
+                    <div ng-repeat="tx in $ctrl.transactions | orderBy:'-transaction.timeStamp' | startFromUnc:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
+                        <tag-transaction d="tx" z="$ctrl.scope.accountData.account.address" h="$ctrl.scope" tooltip-position="'left'"></tag-transaction>
+                    </div>
+                  </div>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-body" ng-show="!$ctrl.transactions.length">
+            <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+</div>
+

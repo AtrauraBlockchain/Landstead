@@ -1,0 +1,182 @@
+<div class="create-apostille-page">
+
+  <div class="loading-overlay" ng-show="$ctrl.okPressed">
+        <div class="loader text-center">
+            <img src="images/logomark.png" class="loader-image"/>
+            <p class="loading-text">{{ 'GENERAL_PROCESSING' | translate }}</p>
+        </div>
+    </div>
+
+  <div class="banner-left">
+    <div class="container">
+      <h2><i class="fa fa-hashtag"></i> {{ 'APOSTILLE_UPDATE_TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+
+  <div class="col-sm-6">
+  	<div class="panel panel-default">
+            <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;">
+              <i class="fa fa-chevron-right"></i> 
+              <span ng-show="!$ctrl.formData.isMultisig && !$ctrl.invoice">{{ 'APOSTILLE_TRANSACTION_NAME' | translate }}</span>
+              <span ng-show="$ctrl.formData.isMultisig">{{ 'APOSTILLE_TRANSACTION_MULTISIG_NAME' | translate }}</span>
+              <ul class="nav nav-tabs" style="float:right">
+                <li ng-class="$ctrl.formData.isMultisig ? '' : 'active'"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isMultisig = false;">{{ 'GENERAL_TAB_NORMAL' | translate }}</a></li>
+                <li ng-show="$ctrl._DataBridge.accountData.meta.cosignatoryOf.length" ng-class="$ctrl.formData.isMultisig ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isMultisig = true;">{{ 'GENERAL_TAB_MULTISIG' | translate }}</a></li>
+              </ul>
+            </div>
+            <div class="panel-body">
+
+            	<fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="password"
+                placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}"
+                ng-model="$ctrl.common.password"/>
+            </fieldset>
+
+            <fieldset class="form-group" ng-show="$ctrl.formData.isMultisig">
+             <select class="form-control" ng-options="acc.address for acc in $ctrl._DataBridge.accountData.meta.cosignatoryOf track by acc.address" ng-model="$ctrl.formData.multisigAccount">
+            </select>
+            </fieldset>
+
+            <fieldset class="form-group" ng-show="$ctrl.formData.isMultisig && $ctrl.formData.multisigAccount">
+                            <div class="input-group">
+                              <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'FORM_SIDE_BTN_BALANCE' | translate }}</button>
+                                </span>
+                                <input class="form-control" style="text-align:right;" type="text" value="{{ ($ctrl.formData.multisigAccount.balance | fmtNemValue)[0] }}.{{ ($ctrl.formData.multisigAccount.balance | fmtNemValue)[1] }}" readOnly/>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled><small>XEM</small></button>
+                                </span>
+                            </div>
+                        </fieldset>
+
+            <fieldset class="form-group">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="cursor:default;opacity:1;" disabled>{{ 'APOSTILLE_NTY_ACCOUNT' | translate }}</button>
+                </span>
+              <input class="form-control form-control-lg"
+                type="text"
+                ng-model="$ctrl.formData.recipient" readOnly/>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input class="form-control form-control-lg"
+                type="text"
+                placeholder="{{ 'GENERAL_TAGS' | translate }}"
+                ng-model="$ctrl.formData.tags" readOnly/>
+            </fieldset>
+
+            <fieldset class="form-group">
+            <select class="form-control" ng-options="hash.name for hash in $ctrl.hashing" ng-model="$ctrl.formData.hashing">
+            </select>
+            </fieldset>
+
+            <button class="btn btn-success pull-xs-right"
+              type="submit" style="width:100%;" ng-disabled="$ctrl.okPressed || !$ctrl.common.password.length || !$ctrl.filesToApostille.length" ng-click="$ctrl.send()">
+              <i class="fa fa-send"></i> {{ 'GENERAL_SEND' | translate }}
+            </button> 
+
+            </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 noPaddingLeft">
+
+  	<div class="form-group">
+      <div class="panel panel-default" style="margin-bottom:10px;">
+            <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;"> 
+              <span ng-show="$ctrl.formData.isFiles"><i class="fa fa-files-o"></i> {{ 'APOSTILLE_IMPORT_FILES' | translate }}</span>
+              <span ng-show="$ctrl.formData.isText"><i class="fa fa-edit"></i> {{ 'APOSTILLE_CREATE_TEXT' | translate }}</span>
+              <ul class="nav nav-tabs" style="float:right">
+                <li ng-class="$ctrl.formData.isFiles ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isFiles = true;$ctrl.formData.isText = false;"><i class="fa fa-files-o"></i></a></li>
+                <li ng-class="$ctrl.formData.isText ? 'active' : ''"><a style="outline:0;cursor:pointer;display:inline;" ng-click="$ctrl.formData.isFiles = false;$ctrl.formData.isText = true;"><i class="fa fa-edit"></i></a></li>
+              </ul>
+            </div>
+            <div class="panel-body">
+              <div ng-show="$ctrl.formData.isText">
+                <input class="form-control" type="text" ng-disabled="$ctrl.common.password.length === 0 || $ctrl.formData.tags.length === 0" placeholder="{{ 'APOSTILLE_DOCUMENT_TITLE' | translate }}" ng-model="$ctrl.formData.textTitle"/>
+                <textarea class="form-control" rows="7" cols="50" placeholder="{{ 'APOSTILLE_ENTER_TEXT' | translate }}" ng-disabled="$ctrl.common.password.length === 0 || $ctrl.formData.tags.length === 0" ng-model="$ctrl.formData.textContent"></textarea>
+                <button class="btn btn-success" type="submit" style="width:100%;" ng-disabled="$ctrl.common.password.length === 0 || $ctrl.formData.tags.length === 0 || !$ctrl.formData.textTitle.length || !$ctrl.formData.textContent.length" ng-click="$ctrl.processFile($ctrl.formData.textContent, $ctrl.formData.textTitle)">
+                  <i class="fa fa-plus"></i> {{ 'GENERAL_ADD' | translate }}
+                </button> 
+              </div>
+              <div class="drop" ng-style="$ctrl.common.password.length===0 || $ctrl.formData.tags.length===0 ? { 'background-color':'#eeeeee', 'cursor': 'not-allowed'} : { 'background-color':'white', 'cursor': 'pointer' }" style="height:220px;" ng-show="$ctrl.formData.isFiles">
+              <p style="padding-top:100px;"><b class="text-muted" style="color:#444;"><span class="fa fa-cloud-upload"></span> <i>{{ 'GENERAL_DROPBOX' | translate }} </i></b></p>
+              <input type="file" multiple class="upload" id="fileToNotary" style="height: 220px; width: 100%; position: relative; margin-top: -130px;" import-apostille-files="$ctrl.processFile($fileContent, $fileData)" ng-disabled="$ctrl.common.password.length===0 || $ctrl.formData.tags.length===0" />
+            </div>
+          </div>
+    </div>
+      
+        
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+
+  	<div class="panel panel-default">
+            <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;">
+              <i class="fa fa-table"></i> {{ 'APOSTILLE_FILES_TO_NOTARIZE' | translate }}
+              <span ng-show="$ctrl.rejected.length" style="float:right;"><b>{{ 'APOSTILLE_REJECTED' | translate }}: {{$ctrl.rejected.length}}</b> - <a style="color:white;cursor:pointer;"><i ng-show="!$ctrl.viewRejected" class="fa fa-eye" ng-click="$ctrl.viewRejected = true"></i><i ng-show="$ctrl.viewRejected" class="fa fa-eye-slash" ng-click="$ctrl.viewRejected = false"></i></a></span>
+              <div style="float: right; position: relative; display: block;" ng-show="$ctrl.filesToApostille.length > 5 && !$ctrl.viewRejected"><button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+               <div style="float: right; position: relative; display: block;" ng-show="$ctrl.rejected.length > 5 && $ctrl.viewRejected"><button class="buttonStyle" ng-disabled="$ctrl.currentPageRej == 0" ng-click="$ctrl.currentPageRej = $ctrl.currentPageRej-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageRej+1}}/{{$ctrl.numberOfPagesRej()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageRej+1 >= $ctrl.numberOfPagesRej()" ng-click="$ctrl.currentPageRej = $ctrl.currentPageRej+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+            </div>
+            <table  ng-show="!$ctrl.viewRejected" class="table table-bordered table-hover table-striped table-condensed" style="border:1px solid #444;table-layout:fixed;word-break:break-all;">
+                        <thead style="color:white;">
+                            <tr>
+                                <th>{{ 'APOSTILLE_FILENAME' | translate }}</th>
+                                <th>{{ 'GENERAL_TAGS' | translate }}</th>
+                                <th>{{ 'GENERAL_SINK' | translate }}</th>
+                                <th>{{ 'APOSTILLE_FILE_HASH' | translate }}</th>
+                                <th>{{ 'APOSTILLE_PRIVATE' | translate }}</th>
+                                <th>{{ 'GENERAL_NETWORK_FEE' | translate }}</th>
+                                <th>{{ 'GENERAL_REMOVE' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color:white;text-align:center">
+                            <tr ng-repeat="file in $ctrl.filesToApostille | reverse | startFrom:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.filename}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.tags}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.recipient}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.message}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444"><span ng-if="file.private"><i class="fa fa-check" style="color:green;"></i></span><span ng-if="!file.private"><i class="fa fa-times" style="color:red;"></i></span></td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.fee/1000000}} <span ng-if="file.multisig.length !=0"><br>+<br>{{file.multisig[0].innerFees/1000000}}</span></td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444;cursor:pointer;"><i class="fa fa-times" style="color: #ed5000;" ng-click="$ctrl.removeFileFromList($ctrl.filesToApostille, file)"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <div class="panel-body" ng-show="!$ctrl.filesToApostille.length && !$ctrl.viewRejected" style="border: 1px solid #444;">
+                        <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+                    </div>
+                    <table ng-show="$ctrl.viewRejected" class="table table-bordered table-hover table-striped table-condensed" style="border:1px solid #444;table-layout:fixed;word-break:break-all;">
+                        <thead style="color:white;">
+                            <tr>
+                                <th>{{ 'APOSTILLE_FILENAME' | translate }}</th>
+                                <th>{{ 'GENERAL_TAGS' | translate }}</th>
+                                <th>{{ 'GENERAL_REASON' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color:white;text-align:center">
+                            <tr ng-repeat="file in $ctrl.rejected | reverse | startFrom:currentPageRej*pageSizeRej | limitTo:pageSizeRej">
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.filename}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444">{{file.tags}}</td>
+                                <td style="vertical-align: middle;border-bottom: 1px solid #444;word-break: initial;">{{file.reason}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-body" ng-show="!$ctrl.rejected.length && $ctrl.viewRejected" style="border: 1px solid #444;">
+                        <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+                    </div>
+                    <div class="panel-footer text-center" style="background-color: #e3e0cf; color: #444;padding:0;">
+                      <small><b><i>{{ 'APOSTILLE_MAX_NUMBER' | translate }}</i></b></small>
+                    </div>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
