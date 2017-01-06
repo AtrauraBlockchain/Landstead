@@ -15,22 +15,31 @@
 					<i class="fa fa-chevron-right"></i> Register a citizen on the blockchain
 				</div>
 				<div class="panel-body">
+					<!-- Password Field -->
+					<label>Enter the account's password</label><br/>
+					<input class="form-control form-control-lg" type="password" placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" ng-model="$ctrl.common.password" />
+					<br/>
+
+
 					<label>Input the citizen's Identification Number</label><br/>
-					<input type="text" class="form-control" ng-model="$ctrl.formData.citizenID" value=""></input>
+					<input type="text" class="form-control" ng-model="$ctrl.citizenID" value=""></input>
 					<br/>
 
-					<label>Input the citizen's Account</label><br/>
-					<input type="text" class="form-control" ng-model="$ctrl.formData.citizenAccount" value=""></input>
+					<label>Input the citizen's Account</label><br/>	
+					<!-- <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount" ng-model-options="{debounce:500}" ng-change="$ctrl.checkAccount()"/> -->
+					<input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
 					<br/>
 
-					<button ng-click="$ctrl.submitCitizen()" ng-disabled="$ctrl.okPressed">Send</button>
+
+					<button ng-click="$ctrl.submitCitizen()" ng-disabled="$ctrl.buttonDisabled">Send</button>
 
 					<ul>
-						<li>BW seed: {{ $ctrl.formData.citizenID }}:{{ $ctrl.country}}</li>
+						<li>BW seed: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
 
-						<li ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
+						<li ng-if="$ctrl.step.bwCreated">Pointer account successfully created: {{ $ctrl.cpAccount }}</li>
 						<li ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
-						<li ng-if="$ctrl.step.cpLinked">cpLinked</li>
+						<li ng-if="$ctrl.step.cpLinked">Pointer account successfully linked. (maybe we can show when the transaction is confirmed/wait)</li>
+
 						<li ng-if="$ctrl.step.tokensToCP">tokensToCP</li>
 						<li ng-if="$ctrl.step.tokensToC">tokensToC</li>
 					</ul>

@@ -45,6 +45,7 @@ import './modules/importanceTransfer';
 import './modules/changelly';
 import './modules/faq';
 import './modules/landstead';
+import './modules/myModule';
 
 // Create and bootstrap application
 const requires = [
@@ -71,6 +72,7 @@ const requires = [
     'app.services',
     'app.faq',
     'app.Landstead',
+    'app.myModule',
     'app.account',
     'app.createApostille',
     'app.auditApostille',
