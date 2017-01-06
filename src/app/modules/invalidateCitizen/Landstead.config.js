@@ -6,7 +6,7 @@ function LandsteadConfig($stateProvider) {
             url: '/citizen/invalidate',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/landstead/Landstead.html',
+            templateUrl: 'modules/invalidateCitizen/Landstead.html',
             title: 'Invalidate Citizen'
         });
 

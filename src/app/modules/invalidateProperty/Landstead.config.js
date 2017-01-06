@@ -6,7 +6,7 @@ function LandsteadConfig($stateProvider) {
             url: '/property/invalidate',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/landstead/Landstead.html',
+            templateUrl: 'modules/invalidateProperty/Landstead.html',
             title: 'Invalidate Property'
         });
 

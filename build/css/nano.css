@@ -221,10 +221,6 @@ fieldset[disabled] .btn-default.focus {
 .panel-footer {
   border-radius: 0px; }
 
-.home-page {
-  font-family: 'Josefin Sans', sans-serif;
-  font-family: 'Anonymous Pro', monospace; }
-
 .home-page .banner h1 {
   color: #fff;
   display: table;

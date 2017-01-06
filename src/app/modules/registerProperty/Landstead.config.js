@@ -6,7 +6,7 @@ function LandsteadConfig($stateProvider) {
             url: '/property/register',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/landstead/Landstead.html',
+            templateUrl: 'modules/registerProperty/Landstead.html',
             title: 'Register Property'
         });
 
