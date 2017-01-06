@@ -122,9 +122,6 @@ class citizenRegisterCtrl {
 
         // Init account mosaics
         this._updateCurrentAccountMosaics();
-        
-        // TODO: validate fees are ok!
-        //this.updateFees();
     }
 
     /**
@@ -294,12 +291,11 @@ class citizenRegisterCtrl {
     _sendMosaic(recipient, namespaceId, mosaic, amount) {
         var transferData = {}
         transferData = this.transferData;
-        console.log(CHECKCIGNGGNGNG);
         console.log(this.transferData);
 
         transferData.recipient = recipient;
         transferData.amount = 0;
-        transferData.message = message;
+        transferData.message = "";
         transferData.encryptMessage = false; // Maybe better to encrypt?
 
         // Setup mosaic information

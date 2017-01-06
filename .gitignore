@@ -57,3 +57,9 @@ jspm_packages
 build/tests/tests.js
 
 build/main.js
+
+build/css/nano.css
+
+build/main.js
+
+build/tests/tests.js

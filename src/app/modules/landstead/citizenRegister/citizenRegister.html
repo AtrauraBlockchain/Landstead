@@ -39,13 +39,13 @@
                </div>
                <div class="panel-body">
                   <ul>
-                     <li>BW seed: {{ $ctrl.formData.citizenID }}:{{ $ctrl.country}}</li>
-                     <li ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
-                     <li ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
-                     <li ng-if="$ctrl.step.cpLinked">cpLinked... OK!</li>
-                     <li ng-if="$ctrl.step.tokensToCP">tokensToCP... OK!</li>
-                     <li ng-if="$ctrl.step.tokensToC">tokensToC... OK!</li>
-                     <li class="succed" ng-if="$ctrl.step.tokensToC">Citizen has been created Successfully</li>
+                     <li>Citizen: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
+                     <li class="info" ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
+                     <li class="info" ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
+                     <li class="info" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
+                     <li class="info" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
+                     <li class="info" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen has been created Successfully</li>
                   </ul>
                </div>
             </div>
