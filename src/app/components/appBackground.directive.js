@@ -14,7 +14,7 @@ function AppBackground($state, $rootScope) {
                         });
                     } else {
                         element.css({
-                            'background': 'rgb(242, 242, 242)'
+                            'background': 'rgb(255, 255, 255)'
                         });
                     }
 

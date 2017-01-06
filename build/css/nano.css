@@ -49,6 +49,9 @@ h4 {
   font-size: 20px;
   font-weight: 500; }
 
+.succed {
+  color: green; }
+
 table {
   border: none !important; }
 
