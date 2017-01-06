@@ -8,7 +8,8 @@ html {
   background-color: #fff; }
 
 body {
-  height: 100%; }
+  height: 100%;
+  font-family: 'Josefin Sans', sans-serif; }
 
 footer {
   bottom: 0;
@@ -46,8 +47,7 @@ h4 {
   padding-top: 20px;
   color: rgba(0, 0, 0, 0.3);
   font-size: 20px;
-  font-weight: 500;
-  font-family: 'Roboto'; }
+  font-weight: 500; }
 
 table {
   border: none !important; }
@@ -183,12 +183,7 @@ fieldset[disabled] .btn-default.focus {
 
 .navbar-default .navbar-brand {
   background-color: transparent;
-  color: black;
-  border-right: 1px solid rgba(0, 0, 0, 0.3); }
-
-.navbar-default .navbar-brand:hover {
-  background-color: green;
-  color: white; }
+  color: black; }
 
 .navbar-default .navbar-brand:focus {
   background-color: #444444;
@@ -254,7 +249,7 @@ fieldset[disabled] .btn-default.focus {
   padding-top: 200px;
   height: 600px; }
 
-.home-page .header-button {
+.landstead-button {
   font-weight: 300;
   margin: 45px auto 0;
   font-size: 14px;
@@ -268,8 +263,8 @@ fieldset[disabled] .btn-default.focus {
   transition: all 0.3s;
   cursor: pointer; }
 
-.home-page .header-button:hover {
-  background-color: #fcd088;
+.home-page .landstead-button:hover {
+  background-color: #fcd088 !important;
   text-decoration: none;
   color: #333; }
 
@@ -280,7 +275,8 @@ fieldset[disabled] .btn-default.focus {
   padding: 60px; }
 
 .home-page .about {
-  font-size: 16px; }
+  font-size: 16px;
+  background-color: ghostwhite; }
 
 .home-page .process {
   background-color: #fff; }
@@ -301,6 +297,10 @@ select {
 .btn-success {
   /*background-color: transparent;*/
   border-radius: 0px; }
+
+.login-page .center {
+  display: block;
+  margin: 0 auto; }
 
 .login-page .btn-success {
   background-color: #5cb85c;

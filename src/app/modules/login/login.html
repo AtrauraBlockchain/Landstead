@@ -2,10 +2,10 @@
 
   <div class="container text-center">
 
-    <h1 style="color:white;">{{ 'LOGIN_MEMBER_TITLE' | translate }}</h1>
+    <h1 style="color:white;">Login in Landstead</h1>
 
     <div class="row">
-      <div class="col-md-6 col-md-offset-3">
+      <div class="col-md-8 col-md-offset-2">
          <br>
         <select class="form-control" style="outline:0;display:initial;" ng-model="$ctrl.selectedWallet" ng-options="wallet.name group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
             <option value="" disabled selected>{{ 'LOGIN_SELECT_WALLET' | translate }}</option>
@@ -14,13 +14,15 @@
           <input class="form-control" type="password" ng-model="$ctrl.common.password" placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" style="margin-top: 5px"/>
         </div>
       </div>
-      <div class="col-md-6 col-md-offset-3">
-        <div class="form-group">
-          <div class="fileUpload btn btn-lg btn-import btn-outline pull-xs-right" style="outline:0;">
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group center">
+          <div class="fileUpload btn btn-lg btn-import btn-outline" style="outline:0; margin-right: 10px;">
            <span>{{ 'LOGIN_IMPORT_BUTTON' | translate }}</span>
               <input type="file" class="upload" multiple='multiple' read-wallet-files="$ctrl.loadWallet($fileContent, $isNCC)" />
       </div>
-         <button class="btn btn-lg btn-success pull-xs-right"
+         <button class="btn btn-lg btn-success"
               type="submit" ng-click="$ctrl.login($ctrl.selectedWallet)" ng-disabled="!$ctrl.selectedWallet">
               {{ 'LOGIN_LOGIN_BUTTON' | translate }}
             </button>
