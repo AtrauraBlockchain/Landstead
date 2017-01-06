@@ -45,3 +45,11 @@ jspm_packages
 
 # Output of 'npm pack'
 *.tgz
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/vcs.xml
+
+.idea/workspace.xml

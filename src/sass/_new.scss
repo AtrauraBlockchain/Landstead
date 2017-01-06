@@ -467,38 +467,3 @@ input[type=checkbox]:checked + label:before { content: "\f046"; } /* checked ico
 input[type=checkbox]:checked + label:before { letter-spacing: 8px; } /* allow space for check mark */
 
 
-
-
-
-
-
-
-
-
-// table thead, table tr td{
-// 	background-color: transparent;
-// 	border: 0px;
-// }
-// table th:first-child, table th:nth-of-type(2), table th:nth-of-type(3), table th:nth-of-type(4){
-// 	border-bottom: 2px solid $blue !important;
-// }
-// /* Target account */
-// table th:first-child, table td:nth-of-type(2) {
-// 	text-align: left;
-// 	width: 44%;
-// }
-// /* Targeting amount */
-// table th:nth-of-type(2), table td:nth-of-type(4) {
-// 	text-align: left;
-// 	width: 14%;
-// }
-// /* Targeting message */
-// table th:nth-of-type(3), table td:nth-of-type(6) {
-// 	text-align: left;
-// 	width: 19%;
-// }
-// /* Targeting date */
-// table th:nth-of-type(4), table td:nth-of-type(8) {
-// 	text-align: left;
-// 	width: 23%;
-// }

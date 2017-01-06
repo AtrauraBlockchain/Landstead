@@ -1,15 +1,19 @@
-<div class="Landstead-page">
+<div class="Landstead-page bg-white">
 
 	<div class="banner-left">
-		<div class="container">
-		<h2><i class="fa fa-hashtag"></i> Citizen Registration</h2>
+		<div class="container-fluid">
+			<div class="row portalWrap">
+				<div class="col-md-12">
+					<h2>Citizen Registration</h2>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
-
-		<!-- Your content here -->
-		<div class="col-md-6" style="margin-top:10px">
+		<div class="row portalWrap">
+			<!-- Your content here -->
+			<div class="col-md-6" style="margin-top:10px">
 			<div class="panel panel-default">
 				<div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px;">
 					<i class="fa fa-chevron-right"></i> Register a citizen on the blockchain
@@ -30,23 +34,22 @@
 					<input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
 					<br/>
 
-
 					<button ng-click="$ctrl.submitCitizen()" ng-disabled="$ctrl.buttonDisabled">Send</button>
 
-					<ul>
-						<li>BW seed: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
-
-						<li ng-if="$ctrl.step.bwCreated">Pointer account successfully created: {{ $ctrl.cpAccount }}</li>
-						<li ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
-						<li ng-if="$ctrl.step.cpLinked">Pointer account successfully linked. (maybe we can show when the transaction is confirmed/wait)</li>
-
-						<li ng-if="$ctrl.step.tokensToCP">tokensToCP</li>
-						<li ng-if="$ctrl.step.tokensToC">tokensToC</li>
-					</ul>
 				</div>
 			</div>
-		</div>
+			<div class="col-md-4">
+				<ul>
+					<li>BW seed: {{ $ctrl.formData.citizenID }}:{{ $ctrl.country}}</li>
 
+					<li ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
+					<li ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
+					<li ng-if="$ctrl.step.cpLinked">cpLinked</li>
+					<li ng-if="$ctrl.step.tokensToCP">tokensToCP</li>
+					<li ng-if="$ctrl.step.tokensToC">tokensToC</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 
 </div>
