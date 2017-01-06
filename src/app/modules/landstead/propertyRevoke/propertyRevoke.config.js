@@ -2,7 +2,7 @@ function propertyRevokeConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.Landstead.property.revoke', {
+        .state('app.LandsteadPropertyRevoke', {
             url: '/property/revoke',
             controller: 'propertyRevokeCtrl',
             controllerAs: '$ctrl',

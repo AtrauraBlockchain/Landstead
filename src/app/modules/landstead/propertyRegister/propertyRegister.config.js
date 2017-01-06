@@ -2,7 +2,7 @@ function propertyRegisterConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.Landstead.property.register', {
+        .state('app.LandsteadPropertyRegister', {
             url: '/property/register',
             controller: 'propertyRegisterCtrl',
             controllerAs: '$ctrl',

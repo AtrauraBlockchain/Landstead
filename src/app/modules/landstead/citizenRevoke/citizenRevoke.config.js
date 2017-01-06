@@ -2,7 +2,7 @@ function citizenRevokeConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.Landstead.citizen.revoke', {
+        .state('app.LandsteadCitizenRevoke', {
             url: '/citizen/revoke',
             controller: 'citizenRevokeCtrl',
             controllerAs: '$ctrl',
