@@ -1,14 +1,14 @@
 import angular from 'angular';
 
 // Create the module where our functionality can attach to
-let LandsteadCitizenRegister = angular.module('app.Landstead.citizen.register', []);
+let Landstead = angular.module('app.Landstead.citizen.register', []);
 
 // Include our UI-Router config settings
-import LandsteadCitizenRegisterConfig from './LandsteadCitizenRegister.config';
-LandsteadCitizenRegister.config(LandsteadCitizenRegisterConfig);
+import LandsteadConfig from './Landstead.config';
+Landstead.config(LandsteadConfig);
 
 // Controllers
-import LandsteadCitizenRegisterCtrl from './LandsteadCitizenRegister.controller';
-LandsteadCitizenRegister.controller('LandsteadCitizenRegisterCtrl', LandsteadCitizenRegisterCtrl);
+import LandsteadCtrl from './Landstead.controller';
+Landstead.controller('LandsteadCtrl', LandsteadCtrl);
 
-export default LandsteadCitizenRegister;
+export default Landstead;

@@ -2,11 +2,11 @@ function LandsteadConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.Landstead', {
+        .state('app.Landstead.citizen.register', {
             url: '/citizen/register',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/landstead/Landstead.html',
+            templateUrl: 'modules/landstead/citizen/register/Landstead.html',
             title: 'Register Citizen'
         });
 
