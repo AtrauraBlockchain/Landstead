@@ -168,25 +168,25 @@ class LandsteadCtrl {
     }
 
     /**
-     * processRecipientInput() Process recipient input and get data from network
+     * _processRecipient() Process recipient input and get data from network
      */
-    checkAccount(account) {
+    _processRecipient(transferData) {
         // return if no value or address length < to min address length
-        if (!account || account.length < 40) {
+        if (!transferData || !transferData.recipient || transferData.recipient.length < 40) {
             return;
         }
 
         // Clean address
-        let recipientAddress = account.toUpperCase().replace(/-/g, '');
+        let recipientAddress = transferData.recipient.toUpperCase().replace(/-/g, '');
         // Check if address is from the same network
         if (Address.isFromNetwork(recipientAddress, this.network)) {
             // Get recipient account data from network
             return this._NetworkRequests.getAccountData(helpers.getHostname(this._Wallet.node), recipientAddress).then((data) => {
                     // Store recipient public key (needed to encrypt messages)
-                    this.transferData.recipientPubKey = data.account.publicKey;
-                    console.log(this.transferData.recipientPubKey)
+                    transferData.recipientPubKey = data.account.publicKey;
+                    console.log(transferData.recipientPubKey)
                     // Set the address to send to
-                    this.transferData.recipient = recipientAddress;
+                    transferData.recipient = recipientAddress;
                 },
                 (err) => {
                     this._Alert.getAccountDataError(err.data.message);
@@ -245,30 +245,30 @@ class LandsteadCtrl {
      */
     _sendMessage(recipient,message) {
 
-        this.transferData.recipient = recipient;
-        this.transferData.amount = 0;
-        this.transferData.message = message;
-        this.transferData.encryptMessage = false; // Maybe better to encrypt?
-        //this.transferData.fee = 5;
-        //this.transferData.innerFee = 0;
-        //this.transferData.isMultisig
-        //this.transferData.multisigAccount
-        //this.transferData.mosaics
-        //this.transferData.isMosaicTransfer
+        var transferData = {}
+        transferData = this.transferData;
+        transferData.recipient = recipient;
+        transferData.amount = 0;
+        transferData.message = message;
+        transferData.encryptMessage = false; // Maybe better to encrypt?
 
-        // Check that the recipient is a valid account
-        this.checkAccount(this.transferData.recipient);
+        return this._send(transferData);
+    }
+
+    _send(transferData){
+        // Check that the recipient is a valid account and process it's public key
+        this._processRecipient(transferData);
 
         // Build the entity to serialize
-        let entity = this._Transactions.prepareTransfer(this.common, this.transferData, this.mosaicsMetaData);
+        let entity = this._Transactions.prepareTransfer(this.common, transferData, this.mosaicsMetaData);
 
         // Construct transaction byte array, sign and broadcast it to the network
-        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((res) => {
+        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((result) => {
             // Check status
-            if (res.status === 200) {
+            if (result.status === 200) {
                 // If code >= 2, it's an error
-                if (res.data.code >= 2) {
-                    this._Alert.transactionError(res.data.message);
+                if (result.data.code >= 2) {
+                    this._Alert.transactionError(result.data.message);
                 } else {
                     this._Alert.transactionSuccess();
                 }
@@ -276,12 +276,57 @@ class LandsteadCtrl {
         },
         (err) => {
             // Delete private key in common
-            this.common.privateKey = '';
+            // this.common.privateKey = '';
             // Enable send button
             this.buttonDisabled = false;
             this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
         });
     }
+
+
+
+    /**
+     * _sendMosaic() Sends a minimal transaction with a mossaic
+     */
+    // _sendMosaic(recipient,mosaic,amount) {
+
+    //     this.transferData.recipient = recipient;
+    //     this.transferData.amount = 0;
+    //     this.transferData.message = message;
+    //     this.transferData.encryptMessage = false; // Maybe better to encrypt?
+    //     //this.transferData.fee = 5;
+    //     //this.transferData.innerFee = 0;
+    //     //this.transferData.isMultisig
+    //     //this.transferData.multisigAccount
+    //     //this.transferData.mosaics
+    //     //this.transferData.isMosaicTransfer
+
+    //     // Check that the recipient is a valid account
+    //     this.checkAccount(this.transferData.recipient);
+
+    //     // Build the entity to serialize
+    //     let entity = this._Transactions.prepareTransfer(this.common, this.transferData, this.mosaicsMetaData);
+
+    //     // Construct transaction byte array, sign and broadcast it to the network
+    //     return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((res) => {
+    //         // Check status
+    //         if (res.status === 200) {
+    //             // If code >= 2, it's an error
+    //             if (res.data.code >= 2) {
+    //                 this._Alert.transactionError(res.data.message);
+    //             } else {
+    //                 this._Alert.transactionSuccess();
+    //             }
+    //         }
+    //     },
+    //     (err) => {
+    //         // Delete private key in common
+    //         this.common.privateKey = '';
+    //         // Enable send button
+    //         this.buttonDisabled = false;
+    //         this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
+    //     });
+    // }
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
@@ -315,7 +360,7 @@ class LandsteadCtrl {
 
             // Send a message to the poiner account to link it to the citizen's
             let message = this.citizenID+"="+this.citizenAccount;
-            this._sendMessage(this.cpAccount,message);
+            this._sendMessage(this.cpAccount, message);
             this.step.cpLinked = true;
 
             //2.5 [G] creates and sends atlantis.register:citizen to [PC]
