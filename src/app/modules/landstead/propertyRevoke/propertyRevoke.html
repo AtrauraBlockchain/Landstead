@@ -6,7 +6,7 @@
    <div class="container-fluid">
       <div class="row portalWrap">
          <div class="col-md-12">
-            <h2>Invalidate Citizen</h2>
+            <h2>Revoke Property</h2>
          </div>
       </div>
       <div class="row row1">
@@ -18,10 +18,10 @@
                </div>
                <div class="panel-body">
                   <!-- Password Field -->
-                  <label>Input the citizen's Account</label><br/>	
+                  <label>Input the property's Account</label><br/> 
                   <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
                   <br/>
-                  <button ng-click="$ctrl.invalidateCitizen()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Invalidate</button>
+                  <button ng-click="$ctrl.revokeCitizen()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Revoke</button>
                </div>
             </div>
          </div>

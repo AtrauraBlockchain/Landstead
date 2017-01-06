@@ -1,11 +1,11 @@
-import CryptoHelpers from '../../../../utils/CryptoHelpers';
-import Network from '../../../../utils/Network';
-import helpers from '../../../../utils/helpers';
-import Address from '../../../../utils/Address';
+import CryptoHelpers from '../../../utils/CryptoHelpers';
+import Network from '../../../utils/Network';
+import helpers from '../../../utils/helpers';
+import Address from '../../../utils/Address';
 
 
-class LandsteadCtrl {
-    // Set services as constructor parameter
+class citizenRevokeCtrl {
+	// Set services as constructor parameter
 
     constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
         'ngInject';
@@ -280,7 +280,7 @@ class LandsteadCtrl {
      *    -     1.5 [G] creates and sends atlantis.register:citizen to [PC]
      *    -     1.6 [G] creates and sends atlantis:citizen to [C]
      */
-    invalidateCitizen(){
+    revokeCitizen(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
@@ -295,4 +295,4 @@ class LandsteadCtrl {
     }
 }
 
-export default LandsteadCtrl;
+export default citizenRevokeCtrl;

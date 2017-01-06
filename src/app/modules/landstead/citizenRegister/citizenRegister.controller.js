@@ -1,10 +1,9 @@
-import CryptoHelpers from '../../../../utils/CryptoHelpers';
-import Network from '../../../../utils/Network';
-import helpers from '../../../../utils/helpers';
-import Address from '../../../../utils/Address';
+import CryptoHelpers from '../../../utils/CryptoHelpers';
+import Network from '../../../utils/Network';
+import helpers from '../../../utils/helpers';
+import Address from '../../../utils/Address';
 
-
-class LandsteadCtrl {
+class citizenRegisterCtrl {
 	// Set services as constructor parameter
 
     constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
@@ -96,9 +95,9 @@ class LandsteadCtrl {
         this.country = "atlantis";
 
         this.namespaces = {}
-        this.namespaces.country = country;
-        this.namespaces.register = country+".register";
-        this.namespaces.revoke = country+".revoke";
+        this.namespaces.country = this.country;
+        this.namespaces.register = this.country+".register";
+        this.namespaces.revoke = this.country+".revoke";
 
 
         //2.1  Officer inputs ID:country
@@ -383,4 +382,4 @@ class LandsteadCtrl {
     }
 }
 
-export default LandsteadCtrl;
+export default citizenRegisterCtrl;

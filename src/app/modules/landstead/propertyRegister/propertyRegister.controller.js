@@ -1,10 +1,9 @@
-import CryptoHelpers from '../../../../utils/CryptoHelpers';
-import Network from '../../../../utils/Network';
-import helpers from '../../../../utils/helpers';
-import Address from '../../../../utils/Address';
+import CryptoHelpers from '../../../utils/CryptoHelpers';
+import Network from '../../../utils/Network';
+import helpers from '../../../utils/helpers';
+import Address from '../../../utils/Address';
 
-
-class LandsteadCtrl {
+class propertyRegisterCtrl {
 	// Set services as constructor parameter
 
     constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
@@ -95,10 +94,24 @@ class LandsteadCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        //2.1  Officer inputs Citizen Account      
+        //2.1  Officer inputs ID:country
+        this.citizenID = "ATRAURA BLOCKCHAIN LOVES NEM";
+        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+      
         this.buttonDisabled = false;
         
-        //2.2 Officer sends invalid token
+        //2.2 [CP] BW gets created
+        this.step.bwCreated = false;
+        this.cpAccount = "";
+
+        //2.3 [CP] is set to be a MultiSignature acct from [G] 
+        this.step.cpMultiSigReady = false;
+
+        //2.4 [G] sends message (ID=C) to [CP]
+        this.step.cpLinked = false;
+        //2.5 [G] creates and sends atlantis.register:citizen to [CP]
+        this.step.tokensToCP = false;
+        //2.6 [G] creates and sends atlantis:citizen to [C]
         this.step.tokensToC = false;
 
         // Init account mosaics
@@ -280,7 +293,7 @@ class LandsteadCtrl {
      *    -     1.5 [G] creates and sends atlantis.register:citizen to [PC]
      *    -     1.6 [G] creates and sends atlantis:citizen to [C]
      */
-    invalidateCitizen(){
+    submitCitizen(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
@@ -289,10 +302,33 @@ class LandsteadCtrl {
 
         // User is authorized, starting...
         this.buttonDisabled = true;
-        console.log("Invalidating  citizen...");
+        console.log("Submitting new citizen...");
 
 
+        // Create a brain wallet using a seed based on the citizen's ID and a pattern so that there are few collisions. On a real use cases this should be stronger.
+        let seed = this.citizenID+":"+this.country;
+
+        this._createBrainWallet(seed).then((data)=>{
+            //2.3 [PC] is set to be a MS acct from [G] 
+            // TODO: This is not critical
+
+            // Send a message to the poiner account to link it to the citizen's
+            let message = this.citizenID+"="+this.citizenAccount;
+            this._sendMessage(this.cpAccount,message);
+            this.step.cpLinked = true;
+
+            //2.5 [G] creates and sends atlantis.register:citizen to [PC]
+
+            //2.6 [G] creates and sends atlantis:citizen to [C]
+        },
+        (err) => {
+            // Delete private key in common
+            this.common.privateKey = '';
+            // Enable send button
+            this.buttonDisabled = false;
+            this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
+        });  
     }
 }
 
-export default LandsteadCtrl;
+export default propertyRegisterCtrl;

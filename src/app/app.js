@@ -44,10 +44,7 @@ import './modules/explorer';
 import './modules/importanceTransfer';
 import './modules/changelly';
 import './modules/faq';
-import './modules/landstead/citizen/invalidate';
-import './modules/landstead/citizen/register';
-import './modules/landstead/property/invalidate';
-import './modules/landstead/property/register';
+import './modules/landstead';
 //import './modules/myModule';
 import './modules/transactions';
 
@@ -76,10 +73,10 @@ const requires = [
     'app.login',
     'app.services',
     'app.faq',
-    'app.Landstead.citizen.invalidate',
-    'app.Landstead.citizen.register',
-    'app.Landstead.property.invalidate',
-    'app.Landstead.property.register',
+    'app.LandsteadCitizenRevoke',
+    'app.LandsteadCitizenRegister',
+    'app.LandsteadPropertyRevoke',
+    'app.LandsteadPropertyRegister',
     'app.transactions',
     'app.account',
     'app.createApostille',
