@@ -1,0 +1,199 @@
+ <div class="dashboard-page">
+
+  <div class="banner-left">
+    <div class="container">
+
+
+
+    </div>
+  </div>
+
+  <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+      <div class="col-xs-12 col-md-7">
+        <h2>{{'DASHBOARD_TITLE' | translate}}</h2>
+
+        <div class="panel panel-default">
+            <div class="panel-heading noPadding">
+              <ul class="nav nav-tabs">
+                  <li ng-class="$ctrl.tabConfirmed ? 'active' : ''"><a ng-click="$ctrl.tabConfirmed = true;$ctrl.currentPageUnc = 0" style="outline:0;cursor:pointer;">{{ 'DASHBOARD_CONFIRMED' | translate }}</a></li>
+                  <li ng-class="$ctrl.tabConfirmed ? '' : 'active'"><a ng-click="$ctrl.tabConfirmed = false;$ctrl.currentPage = 0" style="outline:0;cursor:pointer;">{{ 'DASHBOARD_UNCONFIRMED' | translate }} <span class="badge">{{$ctrl._DataBridge.unconfirmed.length}}</span></a></li>
+                  <li style="float: right; position: relative; display: block; padding: 10px 15px;" ng-show="$ctrl._DataBridge.transactions.length > 5 && $ctrl.tabConfirmed"><button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></li>
+                  <li style="float: right; position: relative; display: block; padding: 10px 15px;" ng-show="$ctrl._DataBridge.unconfirmed.length > 5 && !$ctrl.tabConfirmed"><button class="buttonStyle" ng-disabled="$ctrl.currentPageUnc == 0" ng-click="$ctrl.currentPageUnc = $ctrl.currentPageUnc-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageUnc+1}}/{{$ctrl.numberOfPagesUnc()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageUnc+1 >= $ctrl.numberOfPagesUnc()" ng-click="$ctrl.currentPageUnc = $ctrl.currentPageUnc+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></li>
+              </ul>
+            </div>
+            <table class="table table-hover table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>{{ 'GENERAL_ACCOUNT' | translate }}</th>
+                        <th>{{ 'GENERAL_AMOUNT' | translate }}</th>
+                        <th>{{ 'GENERAL_MESSAGE' | translate }}</th>
+                        <th>{{ 'GENERAL_DATE' | translate }}</th>
+                    </tr>
+                </thead>
+            </table>
+            <!-- <div class="row">
+              <div class="col-xs-5">
+                {{ 'GENERAL_ACCOUNT' | translate }}
+              </div>
+              <div class="col-xs-2">
+                {{ 'GENERAL_AMOUNT' | translate }}
+              </div>
+              <div class="col-xs-3">
+                {{ 'GENERAL_MESSAGE' | translate }}
+              </div>
+              <div class="col-xs-2">
+                {{ 'GENERAL_DATE' | translate }}
+              </div>
+            </div> -->
+
+            <table class="table">
+                <tbody>
+                  <div ng-show="$ctrl.tabConfirmed">
+                    <div ng-repeat="tx in $ctrl._DataBridge.transactions | orderBy:'-transaction.timeStamp' | startFromUnc:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
+                        <tag-transaction d="tx" z="$ctrl._Wallet.currentAccount.address" h="$ctrl._DataBridge" tooltip-position="'left'"></tag-transaction>
+                    </div>
+                  </div>
+                  <div ng-show="!$ctrl.tabConfirmed">
+                   <div ng-repeat="tx in $ctrl._DataBridge.unconfirmed | orderBy:'-transaction.timeStamp' | startFrom:$ctrl.currentPageUnc*$ctrl.pageSizeUnc | limitTo:$ctrl.pageSizeUnc">
+                        <tag-transaction d="tx" z="$ctrl._Wallet.currentAccount.address" h="$ctrl._DataBridge" tooltip-position="'left'" account-data="$ctrl._DataBridge.accountData"></tag-transaction>
+
+                    </div>
+                  </div>
+                </tbody>
+            </table>
+            <div class="panel-body" ng-show="$ctrl._DataBridge.transactions.length == 0 && $ctrl.tabConfirmed">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+            <div class="panel-body" ng-show="$ctrl._DataBridge.unconfirmed.length == 0 && !$ctrl.tabConfirmed">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="row">
+          <div class="col-xs-12 col-md-9">
+            <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4> {{ 'DASHBOARD_HARVEST_INCOME_TITLE' | translate }} </h4>
+            </div>
+            <div class="panel-body" ng-show="$ctrl._DataBridge.harvestedBlocks.length && !$ctrl.chartEmpty" style="padding:10px;padding-bottom:0px;">
+              <canvas width='793' height='200' id="bar" class="chart chart-bar" chart-data="$ctrl.valuesInFee" chart-labels="$ctrl.labels"></canvas>
+              <center><small>{{ 'DASHBOARD_HARVEST_INCOME_NOTE' | translate }}</small></center>
+            </div>
+            <div class="panel-body" ng-show="!$ctrl._DataBridge.harvestedBlocks.length">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+            <div class="panel-body" ng-show="$ctrl.chartEmpty && $ctrl._DataBridge.harvestedBlocks.length">
+                <p style="margin:0;">{{ 'DASHBOARD_HARVEST_INCOME_MESSAGE' | translate }}</p>
+            </div>
+          </div>
+        </div>
+
+          <div class="col-xs-12 col-md-3 noPaddingLeft">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>{{ 'DASHBOARD_HARVESTED_BLOCKS_TITLE' | translate }}</h4>
+              <div style="float: right; position: relative; display: block;" ng-show="$ctrl._DataBridge.harvestedBlocks.length > 5"><button class="buttonStyle" ng-disabled="$ctrl.currentPageHb == 0" ng-click="$ctrl.currentPageHb = $ctrl.currentPageHb-1" style="background-color: transparent; border: medium none;"><span class="fa fa-chevron-left" aria-hidden="true"></span></button><b>{{$ctrl.currentPageHb+1}}/{{$ctrl.numberOfPagesHb()}}</b><button class="buttonStyle" ng-disabled="$ctrl.currentPageHb+1 >= $ctrl.numberOfPagesHb()" ng-click="$ctrl.currentPageHb = $ctrl.currentPageHb+1" style="background-color: transparent; border: medium none;"> <span class="fa fa-chevron-right" aria-hidden="true"></span></button></div>
+            </div>
+            <table class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed">
+                <thead>
+                    <tr>
+                        <th>{{ 'GENERAL_BLOCK' | translate }}</th>
+                        <th>{{ 'DASHBOARD_HARVESTED_BLOCKS_TH' | translate }}</th>
+                    </tr>
+                </thead>
+            </table>
+            <table ng-show="$ctrl._DataBridge.harvestedBlocks.length" class="table table-bordered table-hover table-striped table-condensed" style="table-layout:fixed">
+                <tbody>
+            <tr ng-repeat="block in $ctrl._DataBridge.harvestedBlocks | startFrom:$ctrl.currentPageHb*$ctrl.pageSizeHb | limitTo:$ctrl.pageSizeHb">
+                <td>{{block.height}}</td>
+                <td>{{block.totalFee/1000000}}</td>
+            </tr>
+          </tbody>
+        </table>
+            <div class="panel-body" ng-show="!$ctrl._DataBridge.harvestedBlocks.length">
+                <p style="margin:0;">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-xs-12 col-md-4 col-md-offset-1 noPaddingLeft updates">
+      <h4>{{ 'DASHBOARD_NEWS_TITLE' | translate }}</h4>
+      <div>
+            <div>
+                  <h3>Welcome to the Nano Wallet Beta!</h3>
+                  <p>
+                  Please <a href="https://github.com/NemProject/NanoWallet" target="_blank">report issues here</a>.
+                </p><p>
+                  The NEM team is not responsible for any loss of funds due to testing this app on the main net and we suggest primarily testing on the testnet. Users are responsible for their funds and having their private keys backed up.
+                  <br><br>
+                  Do not use the main net unless you are confident all your funds are securely backed up. We suggest writing down private keys on paper and storing it in a safe place. Additionally, you can import your accounts into Lightwallet/NCC.
+                  <br><br>
+                  Thanks for your participation!
+                  </p>
+            </div>
+        </div>
+        <!-- MARKET INFO WIDGET -->
+        <div class="market-info noPaddingLeft">
+            <h4> {{ 'DASHBOARD_MARKET_INFO_TITLE' | translate }}</h4>
+        <div class="col-md-6 header noPaddingLeft">
+          {{ 'DASHBOARD_MARKET_INFO_CAP' | translate }}:
+        <br>
+          <span><i class="fa fa-usd"></i> {{$ctrl._DataBridge.marketInfo.market_cap_usd | currencyFormat}}</span>
+        </div>
+
+        <div class="col-md-6 header">
+          {{ 'DASHBOARD_MARKET_INFO_VOLUME' | translate }}:
+        <br>
+          <span><i class="fa fa-usd"></i> {{$ctrl._DataBridge.marketInfo['24h_volume_usd'] | currencyFormat}}</span>
+        </div>
+        <div class="col-md-6 header ticker noPaddingLeft">
+          {{ 'DASHBOARD_MARKET_INFO_PRICE' | translate }} in USD:
+        <br>
+          <span><i class="fa fa-usd"></i> {{$ctrl._DataBridge.marketInfo.price_usd}}</span>
+        </div>
+        <div class="col-md-6 ticker header">
+          {{ 'DASHBOARD_MARKET_INFO_PRICE' | translate }} in Bitcoin:
+        <br>
+          <span><i class="fa fa-bitcoin"></i> {{$ctrl._DataBridge.marketInfo.price_btc}}</span>
+        </div>
+
+        <div class="col-md-12 header ticker noPaddingLeft">
+          {{ 'DASHBOARD_MARKET_INFO_CHANGES' | translate }}:
+        </div>
+        <div class="market-percent">
+        <div class="col-md-4">
+          <b>{{ 'DASHBOARD_MARKET_INFO_CHANGES_1H' | translate }}: </b>
+          <span ng-style="$ctrl._DataBridge.marketInfo.percent_change_1h < 0 ? { 'color': 'red'} : { 'color': 'green'}">
+            <span class="fa fa-caret-up" ng-show="$ctrl._DataBridge.marketInfo.percent_change_1h > 0"></span>
+            <span class="fa fa-caret-down" ng-show="$ctrl._DataBridge.marketInfo.percent_change_1h < 0"></span>
+            {{$ctrl._DataBridge.marketInfo.percent_change_1h}} %
+          </span>
+        </div>
+        <div class="col-md-4">
+          <b>{{ 'DASHBOARD_MARKET_INFO_CHANGES_24H' | translate }}: </b>
+          <span ng-style="$ctrl._DataBridge.marketInfo.percent_change_24h < 0 ? { 'color': 'red'} : { 'color': 'green'}">
+            <span class="fa fa-caret-up" ng-show="$ctrl._DataBridge.marketInfo.percent_change_24h > 0"></span>
+            <span class="fa fa-caret-down" ng-show="$ctrl._DataBridge.marketInfo.percent_change_24h < 0"></span>
+            {{$ctrl._DataBridge.marketInfo.percent_change_24h}} %</span>
+        </div>
+        <div class="col-md-4">
+          <b>{{ 'DASHBOARD_MARKET_INFO_CHANGES_7D' | translate }}: </b>
+          <span ng-style="$ctrl._DataBridge.marketInfo.percent_change_7d < 0 ? { 'color': 'red'} : { 'color': 'green'}">
+            <span class="fa fa-caret-up" ng-show="$ctrl._DataBridge.marketInfo.percent_change_7d > 0"></span>
+            <span class="fa fa-caret-down" ng-show="$ctrl._DataBridge.marketInfo.percent_change_7d < 0"></span>
+            {{$ctrl._DataBridge.marketInfo.percent_change_7d}} %
+          </span>
+        </div>
+
+</div>
+
+</div>
+
+          </div>
+
+        </div>
+
+  </div>
