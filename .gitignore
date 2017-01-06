@@ -53,3 +53,7 @@ jspm_packages
 .idea/vcs.xml
 
 .idea/workspace.xml
+
+build/tests/tests.js
+
+build/main.js
