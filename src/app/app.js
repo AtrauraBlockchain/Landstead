@@ -47,9 +47,11 @@ import './modules/faq';
 import './modules/landstead';
 //import './modules/myModule';
 import './modules/transactions';
-import './modules/invalidateCitizen';
-import './modules/registerProperty';
-import './modules/invalidateProperty';
+import './modules/citizen/invalidate';
+import './modules/citizen/register';
+
+import './modules/property/invalidate';
+import './modules/property/register';
 
 
 // Create and bootstrap application
