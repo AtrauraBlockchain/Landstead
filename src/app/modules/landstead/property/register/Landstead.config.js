@@ -2,11 +2,11 @@ function LandsteadConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.registerProperty', {
+        .state('app.Landstead.property.register', {
             url: '/property/register',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/registerProperty/Landstead.html',
+            templateUrl: 'modules/landstead/property/register/Landstead.html',
             title: 'Register Property'
         });
 

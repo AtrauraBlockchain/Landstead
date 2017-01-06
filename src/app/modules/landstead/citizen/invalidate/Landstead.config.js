@@ -2,11 +2,11 @@ function LandsteadConfig($stateProvider) {
     'ngInject';
 
     $stateProvider
-        .state('app.invalidateCitizen', {
+        .state('app.Landstead.citizen.invalidate', {
             url: '/citizen/invalidate',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
-            templateUrl: 'modules/invalidateCitizen/Landstead.html',
+            templateUrl: 'modules/landstead/citizen/invalidate/Landstead.html',
             title: 'Invalidate Citizen'
         });
 

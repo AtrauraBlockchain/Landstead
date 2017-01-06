@@ -44,14 +44,12 @@ import './modules/explorer';
 import './modules/importanceTransfer';
 import './modules/changelly';
 import './modules/faq';
-import './modules/landstead';
+import './modules/landstead/citizen/invalidate';
+import './modules/landstead/citizen/register';
+import './modules/landstead/property/invalidate';
+import './modules/landstead/property/register';
 //import './modules/myModule';
 import './modules/transactions';
-import './modules/citizen/invalidate';
-import './modules/citizen/register';
-
-import './modules/property/invalidate';
-import './modules/property/register';
 
 
 // Create and bootstrap application
@@ -78,10 +76,10 @@ const requires = [
     'app.login',
     'app.services',
     'app.faq',
-    'app.Landstead',
-    'app.invalidateCitizen',
-    'app.registerProperty',
-    'app.invalidateProperty',
+    'app.Landstead.citizen.invalidate',
+    'app.Landstead.citizen.register',
+    'app.Landstead.property.invalidate',
+    'app.Landstead.property.register',
     'app.transactions',
     'app.account',
     'app.createApostille',

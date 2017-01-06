@@ -1,7 +1,7 @@
 import angular from 'angular';
 
 // Create the module where our functionality can attach to
-let Landstead = angular.module('app.invalidateProperty', []);
+let Landstead = angular.module('app.Landstead.property.invalidate', []);
 
 // Include our UI-Router config settings
 import LandsteadConfig from './Landstead.config';
