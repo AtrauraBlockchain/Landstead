@@ -3,11 +3,11 @@ function LandsteadConfig($stateProvider) {
 
     $stateProvider
         .state('app.Landstead', {
-            url: '/landstead',
+            url: '/citizen/register',
             controller: 'LandsteadCtrl',
             controllerAs: '$ctrl',
             templateUrl: 'modules/landstead/Landstead.html',
-            title: 'Landstead module'
+            title: 'Register Citizen'
         });
 
 };

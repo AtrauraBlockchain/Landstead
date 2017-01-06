@@ -47,6 +47,9 @@ import './modules/faq';
 import './modules/landstead';
 //import './modules/myModule';
 import './modules/transactions';
+import './modules/invalidateCitizen';
+import './modules/registerProperty';
+import './modules/invalidateProperty';
 
 
 // Create and bootstrap application
@@ -74,6 +77,9 @@ const requires = [
     'app.services',
     'app.faq',
     'app.Landstead',
+    'app.invalidateCitizen',
+    'app.registerProperty',
+    'app.invalidateProperty',
     'app.transactions',
     'app.account',
     'app.createApostille',
