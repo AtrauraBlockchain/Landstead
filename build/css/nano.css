@@ -1,10 +1,14 @@
 html {
   position: relative;
   min-height: 100vh;
-  padding-bottom: 100px;
   font-family: 'Roboto';
   z-index: -1;
+  padding: 0px;
+  height: 100%;
   background-color: #fff; }
+
+body {
+  height: 100%; }
 
 footer {
   bottom: 0;
