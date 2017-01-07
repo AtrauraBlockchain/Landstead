@@ -101,23 +101,27 @@ class citizenRegisterCtrl {
         this.namespaces.revoke = this.country+".revoke";
 
 
-        //2.1  Officer inputs ID:country
-        this.citizenID = "ATRAURA BLOCKCHAIN LOVES NEM";
-        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
-      
         this.buttonDisabled = false;
-        
-        //2.2 [CP] BW gets created
+
+        // 1. Officer inputs ID:dateOfBirth,NIS,...:country
+        //Randomize sample
+        this.citizenID = "ATRAURA_LOVES_NEM";
+        this.citizenInfo = CryptoHelpers.randomKey().toString().substring(0, 10).replace(/,\s*$/, "");
+        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+
+        // 2. [CP] BW gets created
         this.step.bwCreated = false;
         this.cpAccount = "";
-        //2.3 [CP] is set to be a MultiSignature acct from [G] 
-        this.step.cpOwned = false;
-        //2.4 [G] sends message (ID=C) to [CP]
+        // 3. [G] sends message (ID=C) to [CP]
         this.step.cpLinked = false;
-        //2.5 [G] creates and sends atlantis.register:citizen to [CP]
+        // 4. [CP] is set to be a MultiSignature acct from [G] 
+        this.step.cpOwned = false;
+        // 5. [G] creates and sends atlantis.register:citizen to [CP]
         this.step.tokensToCP = false;
-        //2.6 [G] creates and sends atlantis:citizen to [C]
+        // 6. [G] creates and sends atlantis:citizen to [C]
         this.step.tokensToC = false;
+        // 7. End of Use case
+        this.step.success = false;
 
         // Init account mosaics
         this._updateCurrentAccountMosaics();
@@ -411,7 +415,7 @@ class citizenRegisterCtrl {
 
         // 1. Create a brain wallet using a seed based on the citizen's ID and a pattern so that there are few collisions. On a real use cases this should be stronger.
         // Sample: "citizenID:country"
-        let seed = this.citizenID+":"+this.country;
+        let seed = this.citizenID+":"+this.citizenInfo+":"+this.country;
 
         // TEMPORARY DEBUG FIXTURE; TODO: DELETE LATER!!!! 
         // seed = "this is a test wallet2";
@@ -426,30 +430,23 @@ class citizenRegisterCtrl {
             console.log("Sending token to CP: " + this.cpAccount);
             this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1, this.common, extraXEM).then((data)=>{
                 this.step.tokensToCP = true;
-                
-                        //2. [CP] is set to be a MS acct from [G] 
-                        console.log("Taking control of CP");
-                        this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
-                            this.step.cpOwned = true;
 
-                // 2.4 Send a message to the poiner account to link it to the citizen's
-                let message = this.citizenID+"="+this.citizenAccount;
-                this._sendMessage(this.cpAccount, message, this.common).then((data)=>{
-                    this.step.cpLinked = true;
+                //2. [CP] is set to be a MS acct from [G] 
+                console.log("Taking control of CP");
+                this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
+                    this.step.cpOwned = true;
 
+                    // 2.4 Send a message to the poiner account to link it to the citizen's
+                    let message = this.citizenID+"="+this.citizenAccount;
+                    this._sendMessage(this.cpAccount, message, this.common).then((data)=>{
+                        this.step.cpLinked = true;
 
-
-                    //2.6 [G] creates and sends atlantis:citizen to [C]
-                    console.log("Sending token to C: " + this.citizenAccount);
-                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common, 0).then((data)=>{
-                        this.step.tokensToC = true;
-
-                        // Wait till extraXEM is propagated (no need for confirmation)
-                        //delay(2000);
-
+                        //2.6 [G] creates and sends atlantis:citizen to [C]
+                        console.log("Sending token to C: " + this.citizenAccount);
+                        this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common, 0).then((data)=>{
+                            this.step.tokensToC = true;
+                            this.step.success = true;
                         });
-
-
                     });
                 });
             });

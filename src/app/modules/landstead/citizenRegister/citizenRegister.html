@@ -24,6 +24,11 @@
                   <label>Input the citizen's Identification Number</label><br/>
                   <input type="text" class="form-control" ng-model="$ctrl.citizenID" value=""></input>
                   <br/>
+
+                  <label>Input the citizen's Specific Information (dob, idExpDate, ...) </label><br/>
+                  <input type="text" class="form-control" ng-model="$ctrl.citizenInfo" value=""></input>
+                  <br/>
+
                   <label>Input the citizen's Account</label><br/>	
                   <!-- <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount" ng-model-options="{debounce:500}" ng-change="$ctrl.checkAccount()"/> -->
                   <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
@@ -39,13 +44,16 @@
                </div>
                <div class="panel-body">
                   <ul>
-                     <li>Citizen: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
+                     <li>
+                        Citizen:</br>
+                        {{ $ctrl.citizenID }}:{{$ctrl.citizenInfo}}:{{ $ctrl.country}}
+                     </li>
                      <li class="info" ng-if="$ctrl.step.bwCreated">Linking account [CP] created: {{ $ctrl.cpAccount }}</li>
                      <li class="info" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
                      <li class="info" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
                      <li class="info" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
                      <li class="info" ng-if="$ctrl.step.cpOwned">Taking control of [CP]... OK!</li>
-                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen has been registered Successfully</li>
+                     <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Citizen has been registered Successfully</li>
                   </ul>
                </div>
             </div>
