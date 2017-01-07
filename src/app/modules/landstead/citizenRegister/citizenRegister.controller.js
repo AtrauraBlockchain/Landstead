@@ -272,19 +272,18 @@ class citizenRegisterCtrl {
     _sendMessage(recipient, message, common) {
 
         var transferData = {}
-        // transferData = this.transferData;
 
+        // Check that the recipient is a valid account and process it's public key
         transferData.recipient = recipient;
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set now
+
         transferData.amount = 0;
         transferData.message = message;
         transferData.encryptMessage = false; // Maybe better to encrypt?
         transferData.isMultisig = false;
         transferData.isMosaicTransfer = false;
 
-
-        // Check that the recipient is a valid account and process it's public key
-        this._processRecipient(transferData);
-        // transferData.recipientPubKey is set
 
         // Build the entity to send
         let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
@@ -296,9 +295,16 @@ class citizenRegisterCtrl {
      */
     _sendMosaic(recipient, namespaceId, mosaics, amount, common) {
         var transferData = {}
-        transferData = this.transferData;
+        
+        // Check that the recipient is a valid account and process it's public key
         transferData.recipient = recipient;
-        transferData.amount = 0;
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set now
+
+        // In case of mosaic transfer amount is used as multiplier, set to 1 as default
+        transferData.amount = 1;
+
+        // Other necessary
         transferData.message = "";
         transferData.encryptMessage = false;
 
@@ -310,14 +316,6 @@ class citizenRegisterCtrl {
             },
             'quantity': amount,
         }];
-
-        // In case of mosaic transfer amount is used as multiplier, set to 1 as default
-        transferData.amount = 1;
-
-        // Check that the recipient is a valid account and process it's public key
-        this._processRecipient(transferData);
-        // transferData.recipientPubKey is set
-
         
         // Build the entity to send
         let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
@@ -325,28 +323,25 @@ class citizenRegisterCtrl {
     }
 
     // /**
-    //  * _sendMosaic(recipient, namespaceId, mosaics, amount) Sends a minimal transaction containing one or more mosaics 
+    //  * _sendOwnedBy(subjectAccount, ownersArray, subjectCommon)
+    //  *  subjectCommon.privateKey must be set
     //  */
-    // _sendOwnedBy(subjectAccount, subjectPrivateKey, ownersArray) {
+    // _sendOwnedBy(subjectAccount, ownersArray, subjectCommon) {
+
     //     var transferData = {}
-
-
-    //     transferData.minCosigs = 1;
-    //     transferData.accountToConvers = subjectAccount;
-    //     this.common.privateKey = subjectPrivateKey;
-    //     // OJO!!!!
-
-    //     transferData.cosignatoryAddress = ownersArray[0];
-    //     transferData.cosignatoryPubKey =
-    //     transferData.multisigPubKey = 
-        
 
     //     // Check that the recipient is a valid account and process it's public key
     //     this._processRecipient(transferData);
         
+    //     transferData.minCosigs = 1;
+    //     transferData.accountToConvert = subjectAccount; // OJO!!!!
+    //     transferData.cosignatoryAddress = ownersArray[0];
+    //     // transferData.cosignatoryPubKey =
+    //     // transferData.multisigPubKey = subjectCommon.
+        
     //     // Build the entity to send
-    //     let entity = this._Transactions._constructAggregate(transferData, ownersArray);
-    //     return this._send(entity);
+    //     let entity = this._Transactions._constructAggregate(transferData, this.mosaicsMetaData);
+    //     return this._send(entity, subjectCommon);
     // }
 
     /**
