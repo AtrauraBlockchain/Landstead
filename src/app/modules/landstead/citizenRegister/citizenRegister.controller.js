@@ -1,6 +1,7 @@
 import CryptoHelpers from '../../../utils/CryptoHelpers';
 import Network from '../../../utils/Network';
 import helpers from '../../../utils/helpers';
+import KeyPair from '../../../utils/KeyPair';
 import Address from '../../../utils/Address';
 
 class citizenRegisterCtrl {
@@ -109,10 +110,8 @@ class citizenRegisterCtrl {
         //2.2 [CP] BW gets created
         this.step.bwCreated = false;
         this.cpAccount = "";
-
         //2.3 [CP] is set to be a MultiSignature acct from [G] 
-        this.step.cpMultiSigReady = false;
-
+        this.step.cpOwned = false;
         //2.4 [G] sends message (ID=C) to [CP]
         this.step.cpLinked = false;
         //2.5 [G] creates and sends atlantis.register:citizen to [CP]
@@ -223,14 +222,36 @@ class citizenRegisterCtrl {
         this._WalletBuilder.createBrainWallet(seed, seed, this.network).then((wallet) => {
             this._$timeout(() => {
                 if (wallet) {
+
+                    var mainAccount = {};
+                    mainAccount.address = wallet.accounts[0].address;
+                    mainAccount.password = seed;
+                    mainAccount.privateKey = "";
+
+                    // Decrypt/generate private key and check it. Returned private key is contained into this.common
+                    if (!CryptoHelpers.passwordToPrivatekeyClear(mainAccount, wallet.accounts[0], wallet.accounts[0].algo, false)) {
+                        this._Alert.invalidPassword();
+                        return;
+                    } 
+
+                    mainAccount.publicKey = KeyPair.create(mainAccount.privateKey).publicKey.toString();
+
+
+                    // // TEMPORARY DEBUG FIXTURE; TODO: DELETE LATER!!!! 
+                    // mainAccount.password = "this is a test wallet2";
+                    // mainAccount.address = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME";
+                    // mainAccount.privateKey = "aaab782d4cae57f8c5d71c3674b151a4b82c5e51f8866b979c7ce2dec996446f";
+                    // mainAccount.publicKey = "5f7f7f188ecd29c56bea7118fb33b4b6357b872e89b6d9a236b851977247b5a9";
+
+                    
                     // On success concat new wallet to local storage wallets
                     this._storage.wallets = this._storage.wallets.concat(wallet);
                     this._Alert.createWalletSuccess();
                     
-                    this.step.bwCreated = true;
-                    console.log(wallet);
                     this.cpAccount = wallet['accounts']['0']['address'];
-                    deferred.resolve(true);
+
+                    this.step.bwCreated = true;
+                    deferred.resolve(mainAccount);
                 }
             }, 10);
         },
@@ -293,7 +314,7 @@ class citizenRegisterCtrl {
     /**
      * _sendMosaic(recipient, namespaceId, mosaics, amount) Sends a minimal transaction containing one or more mosaics 
      */
-    _sendMosaic(recipient, namespaceId, mosaics, amount, common) {
+    _sendMosaic(recipient, namespaceId, mosaics, amount, common, extraXEM) {
         var transferData = {}
         
         // Check that the recipient is a valid account and process it's public key
@@ -316,33 +337,52 @@ class citizenRegisterCtrl {
             },
             'quantity': amount,
         }];
+
+        if(extraXEM > 0){
+            transferData.mosaics[1] = {
+                'mosaicId': {
+                    'namespaceId': "nem",
+                    'name': 'xem'
+                },
+                'quantity': extraXEM,
+            }
+        }
         
         // Build the entity to send
         let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
         return this._send(entity, common);
     }
 
-    // /**
-    //  * _sendOwnedBy(subjectAccount, ownersArray, subjectCommon)
-    //  *  subjectCommon.privateKey must be set
-    //  */
-    // _sendOwnedBy(subjectAccount, ownersArray, subjectCommon) {
+    /**
+     * _sendOwnedBySelf(subjectAccount)
+     *    > subjectFullAccount.publicKey
+     *    > subjectFullAccount.privateKey
+     *    > subjectFullAccount.account
+     *    > ownersArray[0].publicKey
+     */
+    _sendOwnedBySelf(subjectFullAccount) {
 
-    //     var transferData = {}
+        // Obtain own public key and address
+        let owner = {}
+        owner.address = this._Wallet.currentAccount.address;
+        owner.publicKey = KeyPair.create(this.common.privateKey).publicKey.toString();
 
-    //     // Check that the recipient is a valid account and process it's public key
-    //     this._processRecipient(transferData);
+        // Set current account as owner
+        let ownersArray = [{}]
+        ownersArray[0].pubKey = owner.publicKey;
+
+        // Set transferData
+        let transferData = {}        
+        transferData.minCosigs = 1;
+        transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
+        transferData.cosignatoryAddress = owner.address;
+        transferData.multisigPubKey = subjectFullAccount.publicKey;
         
-    //     transferData.minCosigs = 1;
-    //     transferData.accountToConvert = subjectAccount; // OJO!!!!
-    //     transferData.cosignatoryAddress = ownersArray[0];
-    //     // transferData.cosignatoryPubKey =
-    //     // transferData.multisigPubKey = subjectCommon.
-        
-    //     // Build the entity to send
-    //     let entity = this._Transactions._constructAggregate(transferData, this.mosaicsMetaData);
-    //     return this._send(entity, subjectCommon);
-    // }
+        // Build the entity to send
+        console.log("subjectFullAccount", subjectFullAccount);
+        let entity = this._Transactions._constructAggregate(transferData, ownersArray);
+        return this._send(entity, subjectFullAccount);
+    }
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
@@ -357,7 +397,8 @@ class citizenRegisterCtrl {
      */
     submitCitizen(){
 
-
+        // Minimum XEM for a MS
+        let extraXEM = 22000000;
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
@@ -366,34 +407,50 @@ class citizenRegisterCtrl {
 
         // User is authorized, starting...
         this.buttonDisabled = true;
-        console.log("Submitting new citizen...");
 
 
-        // Create a brain wallet using a seed based on the citizen's ID and a pattern so that there are few collisions. On a real use cases this should be stronger.
+        // 1. Create a brain wallet using a seed based on the citizen's ID and a pattern so that there are few collisions. On a real use cases this should be stronger.
         // Sample: "citizenID:country"
         let seed = this.citizenID+":"+this.country;
 
-        this._createBrainWallet(seed).then((data)=>{
-            //2.3 [CP] is set to be a MS acct from [G] 
-            let pk = CryptoHelpers.derivePassSha(seed, 6000);
-            // TODO: This is not critical
+        // TEMPORARY DEBUG FIXTURE; TODO: DELETE LATER!!!! 
+        // seed = "this is a test wallet2";
 
-            // 2.4 Send a message to the poiner account to link it to the citizen's
-            let message = this.citizenID+"="+this.citizenAccount;
-            this._sendMessage(this.cpAccount, message, this.common).then((data)=>{
-                this.step.cpLinked = true;
+        var cpBwMainAccount = {};
+        this._createBrainWallet(seed).then((cpBwMainAccount)=>{
+            // cpBwMainAccount.address is set
+            // cpBwMainAccount.privateKey is set
+            // cpBwMainAccount.publicKey is set
 
-                //2.5 [G] creates and sends atlantis.register:citizen to [CP]
-                console.log("Sending token to CP: " + this.cpAccount);
-                this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1, this.common).then((data)=>{
-                    this.step.tokensToCP = true;
+            //2.5 [G] creates and sends atlantis.register:citizen to [CP]
+            console.log("Sending token to CP: " + this.cpAccount);
+            this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1, this.common, extraXEM).then((data)=>{
+                this.step.tokensToCP = true;
+                
+                        //2. [CP] is set to be a MS acct from [G] 
+                        console.log("Taking control of CP");
+                        this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
+                            this.step.cpOwned = true;
+
+                // 2.4 Send a message to the poiner account to link it to the citizen's
+                let message = this.citizenID+"="+this.citizenAccount;
+                this._sendMessage(this.cpAccount, message, this.common).then((data)=>{
+                    this.step.cpLinked = true;
+
+
 
                     //2.6 [G] creates and sends atlantis:citizen to [C]
                     console.log("Sending token to C: " + this.citizenAccount);
-                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common).then((data)=>{
+                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common, 0).then((data)=>{
                         this.step.tokensToC = true;
+
+                        // Wait till extraXEM is propagated (no need for confirmation)
+                        //delay(2000);
+
+                        });
+
+
                     });
-                    
                 });
             });
 

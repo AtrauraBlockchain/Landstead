@@ -40,12 +40,12 @@
                <div class="panel-body">
                   <ul>
                      <li>Citizen: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
-                     <li class="info" ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
-                     <li class="info" ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
+                     <li class="info" ng-if="$ctrl.step.bwCreated">Linking account [CP] created: {{ $ctrl.cpAccount }}</li>
                      <li class="info" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
                      <li class="info" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
                      <li class="info" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
-                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen has been created Successfully</li>
+                     <li class="info" ng-if="$ctrl.step.cpOwned">Taking control of [CP]... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen has been registered Successfully</li>
                   </ul>
                </div>
             </div>
