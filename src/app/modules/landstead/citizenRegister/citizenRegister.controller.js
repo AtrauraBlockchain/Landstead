@@ -228,6 +228,7 @@ class citizenRegisterCtrl {
                     this._Alert.createWalletSuccess();
                     
                     this.step.bwCreated = true;
+                    console.log(wallet);
                     this.cpAccount = wallet['accounts']['0']['address'];
                     deferred.resolve(true);
                 }
@@ -243,17 +244,11 @@ class citizenRegisterCtrl {
     }
 
     /**
-     * _send(transferData) Sends a transaction to the network based on transferData
+     * _send(entity) Sends a transaction to the network based on an entity
      */
-    _send(transferData){
-        // Check that the recipient is a valid account and process it's public key
-        this._processRecipient(transferData);
-
-        // Build the entity to serialize
-        let entity = this._Transactions.prepareTransfer(this.common, transferData, this.mosaicsMetaData);
-
+    _send(entity, common){
         // Construct transaction byte array, sign and broadcast it to the network
-        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((result) => {
+        return this._Transactions.serializeAndAnnounceTransaction(entity, common).then((result) => {
             // Check status
             if (result.status === 200) {
                 // If code >= 2, it's an error
@@ -265,8 +260,6 @@ class citizenRegisterCtrl {
             }
         },
         (err) => {
-            // Delete private key in common
-            // this.common.privateKey = '';
             // Enable send button
             this.buttonDisabled = false;
             this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
@@ -274,48 +267,87 @@ class citizenRegisterCtrl {
     }
 
     /**
-     * _sendMessage() Sends a minimal transaction containing a message to poin 
+     * _sendMessage(recipient, message) Sends a minimal transaction containing a message to poin 
      */
-    _sendMessage(recipient, message) {
+    _sendMessage(recipient, message, common) {
 
         var transferData = {}
-        transferData = this.transferData;
+        // transferData = this.transferData;
+
         transferData.recipient = recipient;
         transferData.amount = 0;
         transferData.message = message;
         transferData.encryptMessage = false; // Maybe better to encrypt?
+        transferData.isMultisig = false;
+        transferData.isMosaicTransfer = false;
 
-        return this._send(transferData);
+
+        // Check that the recipient is a valid account and process it's public key
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set
+
+        // Build the entity to send
+        let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
+        return this._send(entity, common);
     }
 
-    _sendMosaic(recipient, namespaceId, mosaic, amount) {
+    /**
+     * _sendMosaic(recipient, namespaceId, mosaics, amount) Sends a minimal transaction containing one or more mosaics 
+     */
+    _sendMosaic(recipient, namespaceId, mosaics, amount, common) {
         var transferData = {}
         transferData = this.transferData;
-        console.log(this.transferData);
-
         transferData.recipient = recipient;
         transferData.amount = 0;
         transferData.message = "";
-        transferData.encryptMessage = false; // Maybe better to encrypt?
+        transferData.encryptMessage = false;
 
-        // Setup mosaic information
-        // Set the initial mosaic array
+        // Setup mosaics information
         transferData.mosaics = [{
             'mosaicId': {
                 'namespaceId': namespaceId,
-                'name': mosaic
+                'name': mosaics
             },
             'quantity': amount,
         }];
-        // In case of mosaic transfer amount is used as multiplier,
-        // set to 1 as default
+
+        // In case of mosaic transfer amount is used as multiplier, set to 1 as default
         transferData.amount = 1;
 
-        // this.updateFees();
+        // Check that the recipient is a valid account and process it's public key
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set
 
-        return this._send(transferData);
+        
+        // Build the entity to send
+        let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
+        return this._send(entity, common);
     }
 
+    // /**
+    //  * _sendMosaic(recipient, namespaceId, mosaics, amount) Sends a minimal transaction containing one or more mosaics 
+    //  */
+    // _sendOwnedBy(subjectAccount, subjectPrivateKey, ownersArray) {
+    //     var transferData = {}
+
+
+    //     transferData.minCosigs = 1;
+    //     transferData.accountToConvers = subjectAccount;
+    //     this.common.privateKey = subjectPrivateKey;
+    //     // OJO!!!!
+
+    //     transferData.cosignatoryAddress = ownersArray[0];
+    //     transferData.cosignatoryPubKey =
+    //     transferData.multisigPubKey = 
+        
+
+    //     // Check that the recipient is a valid account and process it's public key
+    //     this._processRecipient(transferData);
+        
+    //     // Build the entity to send
+    //     let entity = this._Transactions._constructAggregate(transferData, ownersArray);
+    //     return this._send(entity);
+    // }
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
@@ -329,6 +361,8 @@ class citizenRegisterCtrl {
      *    -     1.6 [G] creates and sends atlantis:citizen to [C]
      */
     submitCitizen(){
+
+
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
@@ -346,21 +380,22 @@ class citizenRegisterCtrl {
 
         this._createBrainWallet(seed).then((data)=>{
             //2.3 [CP] is set to be a MS acct from [G] 
+            let pk = CryptoHelpers.derivePassSha(seed, 6000);
             // TODO: This is not critical
 
             // 2.4 Send a message to the poiner account to link it to the citizen's
             let message = this.citizenID+"="+this.citizenAccount;
-            this._sendMessage(this.cpAccount, message).then((data)=>{
+            this._sendMessage(this.cpAccount, message, this.common).then((data)=>{
                 this.step.cpLinked = true;
 
                 //2.5 [G] creates and sends atlantis.register:citizen to [CP]
                 console.log("Sending token to CP: " + this.cpAccount);
-                this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1).then((data)=>{
+                this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1, this.common).then((data)=>{
                     this.step.tokensToCP = true;
 
                     //2.6 [G] creates and sends atlantis:citizen to [C]
                     console.log("Sending token to C: " + this.citizenAccount);
-                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1).then((data)=>{
+                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common).then((data)=>{
                         this.step.tokensToC = true;
                     });
                     
