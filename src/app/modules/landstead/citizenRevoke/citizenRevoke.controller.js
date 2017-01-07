@@ -5,7 +5,7 @@ import Address from '../../../utils/Address';
 
 
 class citizenRevokeCtrl {
-	// Set services as constructor parameter
+    // Set services as constructor parameter
 
     constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
         'ngInject';
@@ -95,17 +95,34 @@ class citizenRevokeCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        //2.1  Officer inputs Citizen Account      
+        this.namespaces = {}
+        this.namespaces.country = this.country;
+        this.namespaces.register = this.country+".register";
+        this.namespaces.revoke = this.country+".revoke";
+
+
+        //2.1  Officer inputs ID:country
+        this.citizenID = "ATRAURA BLOCKCHAIN LOVES NEM";
+        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+      
         this.buttonDisabled = false;
         
-        //2.2 Officer sends invalid token
+        //2.2 [CP] BW gets created
+        this.step.bwCreated = false;
+        this.cpAccount = "";
+
+        //2.3 [CP] is set to be a MultiSignature acct from [G] 
+        this.step.cpMultiSigReady = false;
+
+        //2.4 [G] sends message (ID=C) to [CP]
+        this.step.cpLinked = false;
+        //2.5 [G] creates and sends atlantis.register:citizen to [CP]
+        this.step.tokensToCP = false;
+        //2.6 [G] creates and sends atlantis:citizen to [C]
         this.step.tokensToC = false;
 
         // Init account mosaics
         this._updateCurrentAccountMosaics();
-        
-        // TODO: validate fees are ok!
-        //this.updateFees();
     }
 
     /**
@@ -154,25 +171,25 @@ class citizenRevokeCtrl {
     }
 
     /**
-     * processRecipientInput() Process recipient input and get data from network
+     * _processRecipient() Process recipient input and get data from network
      */
-    checkAccount(account) {
+    _processRecipient(transferData) {
         // return if no value or address length < to min address length
-        if (!account || account.length < 40) {
+        if (!transferData || !transferData.recipient || transferData.recipient.length < 40) {
             return;
         }
 
         // Clean address
-        let recipientAddress = account.toUpperCase().replace(/-/g, '');
+        let recipientAddress = transferData.recipient.toUpperCase().replace(/-/g, '');
         // Check if address is from the same network
         if (Address.isFromNetwork(recipientAddress, this.network)) {
             // Get recipient account data from network
             return this._NetworkRequests.getAccountData(helpers.getHostname(this._Wallet.node), recipientAddress).then((data) => {
                     // Store recipient public key (needed to encrypt messages)
-                    this.transferData.recipientPubKey = data.account.publicKey;
-                    console.log(this.transferData.recipientPubKey)
+                    transferData.recipientPubKey = data.account.publicKey;
+                    console.log(transferData.recipientPubKey)
                     // Set the address to send to
-                    this.transferData.recipient = recipientAddress;
+                    transferData.recipient = recipientAddress;
                 },
                 (err) => {
                     this._Alert.getAccountDataError(err.data.message);
@@ -227,34 +244,22 @@ class citizenRevokeCtrl {
     }
 
     /**
-     * _sendMessage() Sends a minimal transaction containing a message to poin 
+     * _send(transferData) Sends a transaction to the network based on transferData
      */
-    _sendMessage(recipient,message) {
-
-        this.transferData.recipient = recipient;
-        this.transferData.amount = 0;
-        this.transferData.message = message;
-        this.transferData.encryptMessage = false; // Maybe better to encrypt?
-        //this.transferData.fee = 5;
-        //this.transferData.innerFee = 0;
-        //this.transferData.isMultisig
-        //this.transferData.multisigAccount
-        //this.transferData.mosaics
-        //this.transferData.isMosaicTransfer
-
-        // Check that the recipient is a valid account
-        this.checkAccount(this.transferData.recipient);
+    _send(transferData){
+        // Check that the recipient is a valid account and process it's public key
+        this._processRecipient(transferData);
 
         // Build the entity to serialize
-        let entity = this._Transactions.prepareTransfer(this.common, this.transferData, this.mosaicsMetaData);
+        let entity = this._Transactions.prepareTransfer(this.common, transferData, this.mosaicsMetaData);
 
         // Construct transaction byte array, sign and broadcast it to the network
-        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((res) => {
+        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((result) => {
             // Check status
-            if (res.status === 200) {
+            if (result.status === 200) {
                 // If code >= 2, it's an error
-                if (res.data.code >= 2) {
-                    this._Alert.transactionError(res.data.message);
+                if (result.data.code >= 2) {
+                    this._Alert.transactionError(result.data.message);
                 } else {
                     this._Alert.transactionSuccess();
                 }
@@ -262,7 +267,7 @@ class citizenRevokeCtrl {
         },
         (err) => {
             // Delete private key in common
-            this.common.privateKey = '';
+            // this.common.privateKey = '';
             // Enable send button
             this.buttonDisabled = false;
             this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
@@ -270,15 +275,52 @@ class citizenRevokeCtrl {
     }
 
     /**
-     * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
+     * _sendMessage() Sends a minimal transaction containing a message to poin 
+     */
+    _sendMessage(recipient, message) {
+
+        var transferData = {}
+        transferData = this.transferData;
+        transferData.recipient = recipient;
+        transferData.amount = 0;
+        transferData.message = message;
+        transferData.encryptMessage = false; // Maybe better to encrypt?
+
+        return this._send(transferData);
+    }
+
+    _sendMosaic(recipient, namespaceId, mosaic, amount) {
+        var transferData = {}
+        transferData = this.transferData;
+        console.log(this.transferData);
+
+        transferData.recipient = recipient;
+        transferData.amount = 0;
+        transferData.message = "";
+        transferData.encryptMessage = false; // Maybe better to encrypt?
+
+        // Setup mosaic information
+        // Set the initial mosaic array
+        transferData.mosaics = [{
+            'mosaicId': {
+                'namespaceId': namespaceId,
+                'name': mosaic
+            },
+            'quantity': amount,
+        }];
+        // In case of mosaic transfer amount is used as multiplier,
+        // set to 1 as default
+        transferData.amount = 1;
+
+        // this.updateFees();
+
+        return this._send(transferData);
+    }
+
+    /**
+     * This usecase showcases how to revoke a citizen account
      *    - 0. A Government officer is logged into this account and a Citizen already owns an account (citizenAccount)
-     *    - 1. A form with 2 password fields appears.
-     *    -     1.1  Officer inputs ID:country
-     *    -     1.2 [PC] BW gets created
-     *    -     1.3 [PC] is set to be a MS acct from [G] 
-     *    -     1.4 [G] sends message (ID=C) to [PC]
-     *    -     1.5 [G] creates and sends atlantis.register:citizen to [PC]
-     *    -     1.6 [G] creates and sends atlantis:citizen to [C]
+     *    - 1. [G] creates and sends atlantis:citizen to [C]
      */
     revokeCitizen(){
 
@@ -291,7 +333,18 @@ class citizenRevokeCtrl {
         this.buttonDisabled = true;
         console.log("Invalidating  citizen...");
 
-
+        //2.6 [G] creates and sends atlantis:revoke:citizen to [C]
+        console.log("Sending token to C: " + this.citizenAccount);
+        this._sendMosaic(this.citizenAccount, this.namespaces.revoke, "citizen", 1).then((data)=>{
+            this.step.tokensToC = true;
+        },
+        (err) => {
+            // Delete private key in common
+            this.common.privateKey = '';
+            // Enable send button
+            this.buttonDisabled = false;
+            this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
+        });  
     }
 }
 
