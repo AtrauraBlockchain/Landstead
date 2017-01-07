@@ -18,6 +18,10 @@
                </div>
                <div class="panel-body">
                   <!-- Password Field -->
+                  <label>Enter the account's password</label><br/>
+                  <input class="form-control form-control-lg" type="password" placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" ng-model="$ctrl.common.password" />
+                  <br/>
+                  <!-- Citizen's account field-->
                   <label>Input the citizen's Account</label><br/>	
                   <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
                   <br/>

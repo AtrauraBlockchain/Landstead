@@ -55,3 +55,11 @@ jspm_packages
 .idea/workspace.xml
 
 
+
+src/app/modules/myModule/index.js
+
+src/app/modules/myModule/myModule.config.js
+
+src/app/modules/myModule/myModule.controller.js
+
+src/app/modules/myModule/myModule.html
