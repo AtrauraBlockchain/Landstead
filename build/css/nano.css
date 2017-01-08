@@ -224,6 +224,13 @@ fieldset[disabled] .btn-default.focus {
 .panel-footer {
   border-radius: 0px; }
 
+.home-page .fa {
+  font-size: 40px;
+  color: #fcd088;
+  margin: 0 auto;
+  display: block;
+  text-align: center; }
+
 .home-page .banner h1 {
   color: #fff;
   display: table;
