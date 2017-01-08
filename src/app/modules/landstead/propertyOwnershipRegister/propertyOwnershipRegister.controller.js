@@ -357,28 +357,35 @@ class propertyOwnershipRegisterCtrl {
      *    > subjectFullAccount.account
      *    > ownersArray[0].publicKey
      */
-    _sendOwnedBySelf(subjectFullAccount) {
+    _sendOwnedBy(subjectFullAccount, ownerAccoutAddress) {
 
-        // Obtain own public key and address
-        let owner = {}
-        owner.address = this._Wallet.currentAccount.address;
-        owner.publicKey = KeyPair.create(this.common.privateKey).publicKey.toString();
+        return this._NetworkRequests.getAccountData(helpers.getHostname(this._Wallet.node), ownerAccoutAddress).then((account)=>{
 
-        // Set current account as owner
-        let ownersArray = [{}]
-        ownersArray[0].pubKey = owner.publicKey;
+            // Obtain public key and address
+            console.log("account",account);
+            let owner = {}
+            owner.address = account.account.address;
+            owner.publicKey = account.account.publicKey;
 
-        // Set transferData
-        let transferData = {}        
-        transferData.minCosigs = 1;
-        transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
-        transferData.cosignatoryAddress = owner.address;
-        transferData.multisigPubKey = subjectFullAccount.publicKey;
+            // Set current account as owner
+            let ownersArray = [{}]
+            ownersArray[0].pubKey = owner.publicKey;
+
+            // Set transferData
+            let transferData = {}        
+
+            transferData.minCosigs = 1;
+            transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
+            transferData.cosignatoryAddress = owner.address;
+            transferData.multisigPubKey = subjectFullAccount.publicKey;
+            
+            // Build the entity to send
+            console.log("subjectFullAccount", subjectFullAccount);
+            let entity = this._Transactions._constructAggregate(transferData, ownersArray);
+            return this._send(entity, subjectFullAccount);
+
+        });
         
-        // Build the entity to send
-        console.log("subjectFullAccount", subjectFullAccount);
-        let entity = this._Transactions._constructAggregate(transferData, ownersArray);
-        return this._send(entity, subjectFullAccount);
     }
 
     /**
@@ -410,7 +417,7 @@ class propertyOwnershipRegisterCtrl {
 
                 // 3. [CP] is set to be a MultiSignature acct from [G] 
                 console.log("Taking control of CP");
-                this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
+                this._sendOwnedBy(cpBwMainAccount, this.citizenAccount).then((data)=>{
                     this.step.cpOwned = true;
 
                     //2.6 [G] creates and sends atlantis:citizen to [C]
