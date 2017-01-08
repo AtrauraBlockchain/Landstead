@@ -41,15 +41,25 @@ Civil Servant continues registration use case
     
 ###2. Register a Property###
 1. Civil Servant logs in to [G] and accesses ‘Register a Property’
+
 2. A form is presented with the following fields
+
   2.1 Selection of Property Type: (drop down, for the moment ‘parcel’ is the only one for Atlantis) 
-  2.2 IDp, identification code of the property: 
+  
+  2.2 IDp, identification code of the property.
+  
 3. Civil Servant enters the following information
+
   3.1 he selects Property Type ‘Parcel’
+  
   3.2 he enters the Parcel identification as IDp
+  
   3.3 he confirms with Send
+  
     3.3.1 [P] gets created from IDp@country:parcel
+    
     3.3.2 [G] sends message <IDp> together with 1 country:parcel Asset to [P]
+    
     3.3.3 Convert [P] into MS with cosigner [G] for protection
     
 Optional: When cadastral documents are available they can be Apostilled using [P] 
@@ -98,7 +108,9 @@ Once the Civil Servant has proof of ownership, based on existing cadastral servi
   
   4.2 the multisig accounts (can be more than one for rich people ;-) of which [C] is cosigner: [P] in this example
   
-  4.3 Any optional Apostille Accounts created for Property documents. These can be found as outgoing messages from [P] (See Use case Register a Property)
+  4.3 Any optional Apostille Accounts created for Property documents. These can be found as outgoing messages from [P] 
+  
+  (See Use case Register a Property)
 
 
 ##Developers##
