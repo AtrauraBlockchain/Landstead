@@ -1,10 +1,11 @@
 import CryptoHelpers from '../../../utils/CryptoHelpers';
 import Network from '../../../utils/Network';
 import helpers from '../../../utils/helpers';
+import KeyPair from '../../../utils/KeyPair';
 import Address from '../../../utils/Address';
 
 class propertyRegisterCtrl {
-	// Set services as constructor parameter
+    // Set services as constructor parameter
 
     constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
         'ngInject';
@@ -94,31 +95,31 @@ class propertyRegisterCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        //2.1  Officer inputs ID:country
-        this.citizenID = "ATRAURA BLOCKCHAIN LOVES NEM";
-        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
-      
+        this.namespaces = {}
+        this.namespaces.country = this.country;
+        this.namespaces.register = this.country+".register";
+        this.namespaces.revoke = this.country+".revoke";
+
+
         this.buttonDisabled = false;
-        
-        //2.2 [CP] BW gets created
+
+        // 0. Officer inputs ID:dateOfBirth,NIS,...:country
+        //Randomize sample
+        var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
+        this.propertyID = randomnumber;
+        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+        // 1. [P] gets created from IDp@country:parcel
         this.step.bwCreated = false;
-        this.cpAccount = "";
-
-        //2.3 [CP] is set to be a MultiSignature acct from [G] 
-        this.step.cpMultiSigReady = false;
-
-        //2.4 [G] sends message (ID=C) to [CP]
+        // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
         this.step.cpLinked = false;
-        //2.5 [G] creates and sends atlantis.register:citizen to [CP]
         this.step.tokensToCP = false;
-        //2.6 [G] creates and sends atlantis:citizen to [C]
-        this.step.tokensToC = false;
+        // 3. [CP] is set to be a MultiSignature acct from [G] 
+        this.step.cpOwned = false;
+        // 4. [P] becomes MS for protection
+        this.step.success = false;
 
         // Init account mosaics
         this._updateCurrentAccountMosaics();
-        
-        // TODO: validate fees are ok!
-        //this.updateFees();
     }
 
     /**
@@ -167,25 +168,25 @@ class propertyRegisterCtrl {
     }
 
     /**
-     * processRecipientInput() Process recipient input and get data from network
+     * _processRecipient() Process recipient input and get data from network
      */
-    checkAccount(account) {
+    _processRecipient(transferData) {
         // return if no value or address length < to min address length
-        if (!account || account.length < 40) {
+        if (!transferData || !transferData.recipient || transferData.recipient.length < 40) {
             return;
         }
 
         // Clean address
-        let recipientAddress = account.toUpperCase().replace(/-/g, '');
+        let recipientAddress = transferData.recipient.toUpperCase().replace(/-/g, '');
         // Check if address is from the same network
         if (Address.isFromNetwork(recipientAddress, this.network)) {
             // Get recipient account data from network
             return this._NetworkRequests.getAccountData(helpers.getHostname(this._Wallet.node), recipientAddress).then((data) => {
                     // Store recipient public key (needed to encrypt messages)
-                    this.transferData.recipientPubKey = data.account.publicKey;
-                    console.log(this.transferData.recipientPubKey)
+                    transferData.recipientPubKey = data.account.publicKey;
+                    console.log(transferData.recipientPubKey)
                     // Set the address to send to
-                    this.transferData.recipient = recipientAddress;
+                    transferData.recipient = recipientAddress;
                 },
                 (err) => {
                     this._Alert.getAccountDataError(err.data.message);
@@ -220,13 +221,28 @@ class propertyRegisterCtrl {
         this._WalletBuilder.createBrainWallet(seed, seed, this.network).then((wallet) => {
             this._$timeout(() => {
                 if (wallet) {
+
+                    var mainAccount = {};
+                    mainAccount.address = wallet.accounts[0].address;
+                    mainAccount.password = seed;
+                    mainAccount.privateKey = "";
+
+                    // Decrypt/generate private key and check it. Returned private key is contained into this.common
+                    if (!CryptoHelpers.passwordToPrivatekeyClear(mainAccount, wallet.accounts[0], wallet.accounts[0].algo, false)) {
+                        this._Alert.invalidPassword();
+                        return;
+                    } 
+
+                    mainAccount.publicKey = KeyPair.create(mainAccount.privateKey).publicKey.toString();
+
                     // On success concat new wallet to local storage wallets
                     this._storage.wallets = this._storage.wallets.concat(wallet);
                     this._Alert.createWalletSuccess();
                     
-                    this.step.bwCreated = true;
                     this.cpAccount = wallet['accounts']['0']['address'];
-                    deferred.resolve(true);
+
+                    this.step.bwCreated = true;
+                    deferred.resolve(mainAccount);
                 }
             }, 10);
         },
@@ -240,42 +256,22 @@ class propertyRegisterCtrl {
     }
 
     /**
-     * _sendMessage() Sends a minimal transaction containing a message to poin 
+     * _send(entity) Sends a transaction to the network based on an entity
      */
-    _sendMessage(recipient,message) {
-
-        this.transferData.recipient = recipient;
-        this.transferData.amount = 0;
-        this.transferData.message = message;
-        this.transferData.encryptMessage = false; // Maybe better to encrypt?
-        //this.transferData.fee = 5;
-        //this.transferData.innerFee = 0;
-        //this.transferData.isMultisig
-        //this.transferData.multisigAccount
-        //this.transferData.mosaics
-        //this.transferData.isMosaicTransfer
-
-        // Check that the recipient is a valid account
-        this.checkAccount(this.transferData.recipient);
-
-        // Build the entity to serialize
-        let entity = this._Transactions.prepareTransfer(this.common, this.transferData, this.mosaicsMetaData);
-
+    _send(entity, common){
         // Construct transaction byte array, sign and broadcast it to the network
-        return this._Transactions.serializeAndAnnounceTransaction(entity, this.common).then((res) => {
+        return this._Transactions.serializeAndAnnounceTransaction(entity, common).then((result) => {
             // Check status
-            if (res.status === 200) {
+            if (result.status === 200) {
                 // If code >= 2, it's an error
-                if (res.data.code >= 2) {
-                    this._Alert.transactionError(res.data.message);
+                if (result.data.code >= 2) {
+                    this._Alert.transactionError(result.data.message);
                 } else {
                     this._Alert.transactionSuccess();
                 }
             }
         },
         (err) => {
-            // Delete private key in common
-            this.common.privateKey = '';
             // Enable send button
             this.buttonDisabled = false;
             this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
@@ -283,43 +279,144 @@ class propertyRegisterCtrl {
     }
 
     /**
+     * _sendMessage(recipient, message) Sends a minimal transaction containing a message to poin 
+     */
+    _sendMessage(recipient, message, common) {
+
+        var transferData = {}
+
+        // Check that the recipient is a valid account and process it's public key
+        transferData.recipient = recipient;
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set now
+
+        transferData.amount = 0;
+        transferData.message = message;
+        transferData.encryptMessage = false; // Maybe better to encrypt?
+        transferData.isMultisig = false;
+        transferData.isMosaicTransfer = false;
+
+
+        // Build the entity to send
+        let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
+        return this._send(entity, common);
+    }
+
+    /**
+     * _sendMosaic(recipient, namespaceId, mosaics, amount) Sends a minimal transaction containing one or more mosaics 
+     */
+    _sendMosaic(recipient, namespaceId, mosaics, amount, common, options) {
+
+        var xem = ""
+        var message = ""
+        if(options.xem) xem = options.xem;
+        if(options.message) message = options.message;
+
+        var transferData = {}
+        
+        // Check that the recipient is a valid account and process it's public key
+        transferData.recipient = recipient;
+        this._processRecipient(transferData);
+        // transferData.recipientPubKey is set now
+
+        // In case of mosaic transfer amount is used as multiplier, set to 1 as default
+        transferData.amount = 1;
+
+        // Other necessary
+        transferData.message = message;
+        transferData.encryptMessage = false;
+
+        // Setup mosaics information
+        transferData.mosaics = [{
+            'mosaicId': {
+                'namespaceId': namespaceId,
+                'name': mosaics
+            },
+            'quantity': amount,
+        }];
+
+        if(xem > 0){
+            transferData.mosaics[1] = {
+                'mosaicId': {
+                    'namespaceId': "nem",
+                    'name': 'xem'
+                },
+                'quantity': xem,
+            }
+        }
+        
+        // Build the entity to send
+        let entity = this._Transactions.prepareTransfer(common, transferData, this.mosaicsMetaData);
+        return this._send(entity, common);
+    }
+
+    /**
+     * _sendOwnedBySelf(subjectAccount)
+     *    > subjectFullAccount.publicKey
+     *    > subjectFullAccount.privateKey
+     *    > subjectFullAccount.account
+     *    > ownersArray[0].publicKey
+     */
+    _sendOwnedBySelf(subjectFullAccount) {
+
+        // Obtain own public key and address
+        let owner = {}
+        owner.address = this._Wallet.currentAccount.address;
+        owner.publicKey = KeyPair.create(this.common.privateKey).publicKey.toString();
+
+        // Set current account as owner
+        let ownersArray = [{}]
+        ownersArray[0].pubKey = owner.publicKey;
+
+        // Set transferData
+        let transferData = {}        
+        transferData.minCosigs = 1;
+        transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
+        transferData.cosignatoryAddress = owner.address;
+        transferData.multisigPubKey = subjectFullAccount.publicKey;
+        
+        // Build the entity to send
+        console.log("subjectFullAccount", subjectFullAccount);
+        let entity = this._Transactions._constructAggregate(transferData, ownersArray);
+        return this._send(entity, subjectFullAccount);
+    }
+
+    /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
      *    - 0. A Government officer is logged into this account and a Citizen already owns an account (citizenAccount)
      *    - 1. A form with 2 password fields appears.
      *    -     1.1  Officer inputs ID:country
-     *    -     1.2 [PC] BW gets created
-     *    -     1.3 [PC] is set to be a MS acct from [G] 
-     *    -     1.4 [G] sends message (ID=C) to [PC]
-     *    -     1.5 [G] creates and sends atlantis.register:citizen to [PC]
+     *    -     1.2 [CP] BW gets created
+     *    -     1.3 [CP] is set to be a MS acct from [G] 
+     *    -     1.4 [G] sends message (ID=C) to [CP]
+     *    -     1.5 [G] creates and sends atlantis.register:citizen to [CP]
      *    -     1.6 [G] creates and sends atlantis:citizen to [C]
      */
-    submitCitizen(){
+    submit(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
             return;
         }
 
-        // User is authorized, starting...
-        this.buttonDisabled = true;
-        console.log("Submitting new citizen...");
+        // 1. [P] gets created from IDp@country:parcel
+        let seed = this.propertyID +"@"+this.country+":"+"parcel";
+        var cpBwMainAccount = {};
+        this._createBrainWallet(seed).then((cpBwMainAccount)=>{
 
+            // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
+            let options = {'xem':22000000};
+            this._sendMosaic(cpBwMainAccount.address, this.namespaces.country, "parcel", 1, this.common, options).then((data)=>{
+                this.step.tokensToCP = true;
+                this.step.cpLinked = true;
 
-        // Create a brain wallet using a seed based on the citizen's ID and a pattern so that there are few collisions. On a real use cases this should be stronger.
-        let seed = this.citizenID+":"+this.country;
-
-        this._createBrainWallet(seed).then((data)=>{
-            //2.3 [PC] is set to be a MS acct from [G] 
-            // TODO: This is not critical
-
-            // Send a message to the poiner account to link it to the citizen's
-            let message = this.citizenID+"="+this.citizenAccount;
-            this._sendMessage(this.cpAccount,message);
-            this.step.cpLinked = true;
-
-            //2.5 [G] creates and sends atlantis.register:citizen to [PC]
-
-            //2.6 [G] creates and sends atlantis:citizen to [C]
+                // 3. [CP] is set to be a MultiSignature acct from [G] 
+                console.log("Taking control of CP");
+                this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
+                    this.step.cpOwned = true;
+                    this.success = true;
+                });
+            });
         },
         (err) => {
             // Delete private key in common

@@ -397,7 +397,7 @@ class citizenRegisterCtrl {
      *    -     1.5 [G] creates and sends atlantis.register:citizen to [CP]
      *    -     1.6 [G] creates and sends atlantis:citizen to [C]
      */
-    submitCitizen(){
+    submit(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
@@ -420,7 +420,7 @@ class citizenRegisterCtrl {
             // together with  a message to the poiner account to link it to the citizen's
             console.log("Sending token to CP: " + this.cpAccount);
             let options = {'xem':22000000, 'message':this.citizenID+"="+this.citizenAccount};
-            this._sendMosaic(this.cpAccount, this.namespaces.register, "citizen", 1, this.common, options).then((data)=>{
+            this._sendMosaic(cpBwMainAccount.address, this.namespaces.register, "citizen", 1, this.common, options).then((data)=>{
                 this.step.tokensToCP = true;
                 this.step.cpLinked = true;
 

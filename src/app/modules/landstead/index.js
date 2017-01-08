@@ -25,6 +25,21 @@ propertyRegisterModule.config(propertyRegisterConfig);
 import propertyRegisterCtrl from './propertyRegister/propertyRegister.controller';
 propertyRegisterModule.controller('propertyRegisterCtrl', propertyRegisterCtrl);
 
+
+
+/***************** Property Ownership Register ****************/
+// Create the module where our functionality can attach to
+let propertyOwnershipRegisterModule = angular.module('app.LandsteadPropertyOwnershipRegister', []);
+
+// Include our UI-Router config settings
+import propertyOwnershipRegisterConfig from './propertyOwnershipRegister/propertyOwnershipRegister.config';
+propertyOwnershipRegisterModule.config(propertyOwnershipRegisterConfig);
+
+// Controllers
+import propertyOwnershipRegisterCtrl from './propertyOwnershipRegister/propertyOwnershipRegister.controller';
+propertyOwnershipRegisterModule.controller('propertyOwnershipRegisterCtrl', propertyOwnershipRegisterCtrl);
+
+
 /***************** property Revoke ****************/
 // Create the module where our functionality can attach to
 let propertyRevokeModule = angular.module('app.LandsteadPropertyRevoke', []);

@@ -77,6 +77,7 @@ const requires = [
     'app.LandsteadCitizenRegister',
     'app.LandsteadPropertyRevoke',
     'app.LandsteadPropertyRegister',
+    'app.LandsteadPropertyOwnershipRegister',
     'app.transactions',
     'app.account',
     'app.createApostille',

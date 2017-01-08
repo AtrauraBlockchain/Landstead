@@ -1,6 +1,7 @@
 import CryptoHelpers from '../../../utils/CryptoHelpers';
 import Network from '../../../utils/Network';
 import helpers from '../../../utils/helpers';
+import KeyPair from '../../../utils/KeyPair';
 import Address from '../../../utils/Address';
 
 
@@ -322,7 +323,7 @@ class citizenRevokeCtrl {
      *    - 0. A Government officer is logged into this account and a Citizen already owns an account (citizenAccount)
      *    - 1. [G] creates and sends atlantis:citizen to [C]
      */
-    revokeCitizen(){
+    submit(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
