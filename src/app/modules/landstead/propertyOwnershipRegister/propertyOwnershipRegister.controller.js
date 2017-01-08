@@ -95,10 +95,10 @@ class propertyOwnershipRegisterCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        this.namespaces = {}
-        this.namespaces.country = this.country;
-        this.namespaces.register = this.country+".register";
-        this.namespaces.revoke = this.country+".revoke";
+        this.namespaces = {};
+        this.namespaces.country = "country."+this.country;
+        this.namespaces.register = this.namespaces.country+".register";
+        this.namespaces.revoke = this.namespaces.country+".revoke";
 
 
         this.buttonDisabled = false;
@@ -107,7 +107,7 @@ class propertyOwnershipRegisterCtrl {
         //Randomize sample
         var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
         this.propertyID = randomnumber;
-        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+        this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
         // 1. [P] gets created from IDp@country:parcel
         this.step.bwCreated = false;
         // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
@@ -384,15 +384,9 @@ class propertyOwnershipRegisterCtrl {
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
      *    - 0. A Government officer is logged into this account and a Citizen already owns an account (citizenAccount)
-     *    - 1. A form with 2 password fields appears.
-     *    -     1.1  Officer inputs ID:country
-     *    -     1.2 [CP] BW gets created
-     *    -     1.3 [CP] is set to be a MS acct from [G] 
-     *    -     1.4 [G] sends message (ID=C) to [CP]
-     *    -     1.5 [G] creates and sends atlantis.register:citizen to [CP]
-     *    -     1.6 [G] creates and sends atlantis:citizen to [C]
+     *    - 1. XXXX
      */
-    submitProperty(){
+    submit(){
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){

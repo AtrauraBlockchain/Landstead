@@ -96,15 +96,16 @@ class citizenRevokeCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        this.namespaces = {}
-        this.namespaces.country = this.country;
-        this.namespaces.register = this.country+".register";
-        this.namespaces.revoke = this.country+".revoke";
+        this.namespaces = {};
+        this.namespaces.country = "country."+this.country;
+        this.namespaces.register = this.namespaces.country+".register";
+        this.namespaces.revoke = this.namespaces.country+".revoke";
 
 
         //2.1  Officer inputs ID:country
-        this.citizenID = "ATRAURA BLOCKCHAIN LOVES NEM";
-        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+        var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
+        this.citizenID = randomnumber;
+        this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
       
         this.buttonDisabled = false;
         

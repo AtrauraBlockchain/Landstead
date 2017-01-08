@@ -95,10 +95,10 @@ class propertyRegisterCtrl {
         this.step = {}
         this.country = "atlantis";
 
-        this.namespaces = {}
-        this.namespaces.country = this.country;
-        this.namespaces.register = this.country+".register";
-        this.namespaces.revoke = this.country+".revoke";
+        this.namespaces = {};
+        this.namespaces.country = "country."+this.country;
+        this.namespaces.register = this.namespaces.country+".register";
+        this.namespaces.revoke = this.namespaces.country+".revoke";
 
 
         this.buttonDisabled = false;
@@ -107,7 +107,8 @@ class propertyRegisterCtrl {
         //Randomize sample
         var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
         this.propertyID = randomnumber;
-        this.citizenAccount = "TAGX3L3FKQPL7PZ7UKU2VMDO5QZLNU7POM36SACJ";
+        this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
+
         // 1. [P] gets created from IDp@country:parcel
         this.step.bwCreated = false;
         // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
