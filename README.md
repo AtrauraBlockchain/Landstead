@@ -15,7 +15,9 @@ IDp - Property Identification Number or Code
 
 ##Assets##
 •  atlantis:citizen 
+
 •  atlantis:notary
+
 •  atlantis:parcel
 
 ##Use Cases Implemented ##
