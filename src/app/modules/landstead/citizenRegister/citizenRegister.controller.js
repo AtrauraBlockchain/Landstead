@@ -107,7 +107,7 @@ class citizenRegisterCtrl {
         //Randomize sample
         var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
         this.citizenID = randomnumber;
-        this.citizenInfo = "Alice T. Brown, 1970-01-01";
+        this.citizenInfo = "Alice Brown, 1970-01-01";
         this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
 
 
