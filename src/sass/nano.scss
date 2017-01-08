@@ -432,15 +432,24 @@ form button.btn-success {
 	background-color: #5cb85c;
 }
 
+.signup-page .btn-default:hover{
+	background-color: transparent !important;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
 .signup-page .btn-default.active {
-	/*background-color: #8e8e8e;*/
-	background-color: #e3e0cf;
+	background-color: transparent;
 	border-color: #adadad;
-	color: #444;
+	text-align: center;
+	padding: 10px;
+	color: #fff;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 /*.signup-page .btn-default.active:hover {
-	background-color: #444;
+	background-color: transparent;
 }*/
 
 

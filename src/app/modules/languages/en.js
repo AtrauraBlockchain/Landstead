@@ -496,7 +496,7 @@ function EnglishProvider($translateProvider) {
         LOGIN_LOGIN_BUTTON: 'Sign In',
 
         // SIGNUP MODULE
-        SIGNUP_TITLE: 'New to NEM ?',
+        SIGNUP_TITLE: 'New to Landstead ?',
         SIGNUP_CREATE_WALLET_TITLE: 'Simple wallet',
         SIGNUP_PRIVATE_KEY_WALLET_TITLE: 'Private key wallet',
         SIGNUP_BRAIN_WALLET_TITLE: 'Brain wallet',
