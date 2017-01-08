@@ -401,6 +401,7 @@ class citizenRegisterCtrl {
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
+            this.buttonDisabled = false;
             return;
         }
 

@@ -396,9 +396,9 @@ class propertyRegisterCtrl {
 
         // Verify password and generate/get the PK into this.common
         if(!this._checkAccess()){
+            this.buttonDisabled = false;
             return;
         }
-
         // 1. [P] gets created from IDp@country:parcel
         let seed = this.propertyID +"@"+this.country+":"+"parcel";
         var cpBwMainAccount = {};
