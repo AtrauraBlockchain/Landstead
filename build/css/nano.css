@@ -300,6 +300,15 @@ select {
   /*background-color: transparent;*/
   border-radius: 0px; }
 
+.login-page .demo {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  background-color: #FEF0DB; }
+
+.login-page .demo p {
+  margin: 0px; }
+
 .login-page .center {
   display: block;
   margin: 0 auto; }

@@ -7,6 +7,11 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
          <br>
+        <div class="demo">
+        <p>For demo purposes, you can download a <a href="http://landstead.atraurablockchain.com/this_is_a_test_wallet.wlt">test wallet to import here</a>.
+         <br> <b>Password:</b> this is a test wallet</p>
+        </div>
+
         <select class="form-control" style="outline:0;display:initial;" ng-model="$ctrl.selectedWallet" ng-options="wallet.name group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
             <option value="" disabled selected>{{ 'LOGIN_SELECT_WALLET' | translate }}</option>
         </select>
@@ -28,7 +33,6 @@
             </button>
           </div>
         </div>
-
       </div>
 
   </div>
