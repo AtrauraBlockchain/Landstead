@@ -48,11 +48,11 @@
                         Citizen:</br>
                         {{ $ctrl.citizenID }}:{{$ctrl.citizenInfo}}:{{ $ctrl.country}}
                      </li>
-                     <li class="info" ng-if="$ctrl.step.bwCreated">Linking account [CP] created: {{ $ctrl.cpAccount }}</li>
-                     <li class="info" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
-                     <li class="info" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
-                     <li class="info" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
-                     <li class="info" ng-if="$ctrl.step.cpOwned">Taking control of [CP]... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.bwCreated">Linking account [CP] created: {{ $ctrl.cpAccount }}</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpOwned">Taking control of [CP]... OK!</li>
                      <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Citizen has been registered Successfully</li>
                   </ul>
                </div>
