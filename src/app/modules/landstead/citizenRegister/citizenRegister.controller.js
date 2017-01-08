@@ -367,16 +367,16 @@ class citizenRegisterCtrl {
     _sendOwnedBySelf(subjectFullAccount) {
 
         // Obtain own public key and address
-        let owner = {}
+        let owner = {};
         owner.address = this._Wallet.currentAccount.address;
         owner.publicKey = KeyPair.create(this.common.privateKey).publicKey.toString();
 
         // Set current account as owner
-        let ownersArray = [{}]
+        let ownersArray = [{}];
         ownersArray[0].pubKey = owner.publicKey;
 
         // Set transferData
-        let transferData = {}        
+        let transferData = {};      
         transferData.minCosigs = 1;
         transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
         transferData.cosignatoryAddress = owner.address;

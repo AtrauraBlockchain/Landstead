@@ -22,14 +22,22 @@
                   <input class="form-control form-control-lg" type="password" placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" ng-model="$ctrl.common.password" />
                   <br/>
                   <label>Input the Property's Identification Number</label><br/>
-                  <input type="text" class="form-control" ng-model="$ctrl.propertyID" value=""></input>
+                  If not registered will be created.
+                  <input class="form-control form-control-lg" type="text" ng-model="$ctrl.propertyID" value=""></input>
                   <br/>
 
-                  <label>Input the citizen's Account</label><br/> 
+                  <label>Input the citizen's Identification Number</label><br/>
+                  <input class="form-control form-control-lg" type="text" ng-model="$ctrl.citizenID"/>
+                  <br/>
+
+                  <label>Input the citizen's Account Number</label><br/> 
                   <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_ADDRESS_FIELD_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
                   <br/>
 
-                  <button ng-click="$ctrl.submit()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Send</button>
+                  <button ng-click="$ctrl.submit()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">
+                  Send</button>
+                  <button ng-click="$ctrl.test()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">
+                  Test</button>
                </div>
             </div>
          </div>

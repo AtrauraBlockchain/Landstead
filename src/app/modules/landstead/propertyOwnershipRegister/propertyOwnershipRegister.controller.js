@@ -7,12 +7,13 @@ import Address from '../../../utils/Address';
 class propertyOwnershipRegisterCtrl {
     // Set services as constructor parameter
 
-    constructor($q, $location, $timeout, $localStorage, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
+    constructor($q, $location, $timeout, $localStorage, $filter, Alert, WalletBuilder, AppConstants, NetworkRequests, Wallet, Transactions, DataBridge ) {
         'ngInject';
 
         // Location service <- check
         this._location = $location;
         this._q = $q;
+        this._filter = $filter;
 
         // $timeout to digest asynchronously
         this._$timeout = $timeout;
@@ -107,6 +108,7 @@ class propertyOwnershipRegisterCtrl {
         //Randomize sample
         var randomnumber = Math.floor(Math.random() * (999999999999 - 111111111111 + 1)) + 111111111111;
         this.propertyID = randomnumber;
+        this.citizenID = '807897777200';
         this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
         // 1. [P] gets created from IDp@country:parcel
         this.step.bwCreated = false;
@@ -363,16 +365,16 @@ class propertyOwnershipRegisterCtrl {
 
             // Obtain public key and address
             console.log("account",account);
-            let owner = {}
+            let owner = {};
             owner.address = account.account.address;
             owner.publicKey = account.account.publicKey;
 
             // Set current account as owner
-            let ownersArray = [{}]
+            let ownersArray = [{}];
             ownersArray[0].pubKey = owner.publicKey;
 
             // Set transferData
-            let transferData = {}        
+            let transferData = {};
 
             transferData.minCosigs = 1;
             transferData.accountToConvert = subjectFullAccount.publicKey; // OJO!!!!
@@ -383,10 +385,93 @@ class propertyOwnershipRegisterCtrl {
             console.log("subjectFullAccount", subjectFullAccount);
             let entity = this._Transactions._constructAggregate(transferData, ownersArray);
             return this._send(entity, subjectFullAccount);
-
         });
-        
     }
+
+    /**
+     * _ownsMosaic(address,namespace, mosaic) Checks if address owns any mosaics from namespace:mosaic
+     * Returns: bool
+     */
+    _ownsMosaic(address,namespace, mosaic){
+        var deferred = this._q.defer();
+        var promise = deferred.promise;
+        this._NetworkRequests.getMosaicsDefinitions(helpers.getHostname(this._Wallet.node), address).then((result)=>{
+            let owns = false;
+            if(result.data.length) {
+                for (let i = 0; i < result.data.length; ++i) {
+                    let rNamespace = result.data[i].id.namespaceId;
+                    let rMosaic = result.data[i].id.name;   
+                    if(namespace == rNamespace && mosaic == rMosaic){
+                        owns = true;
+                    }
+                }
+            }
+            deferred.resolve(owns);
+        }, 
+        (err) => {
+            if(err.status === -1) {
+                this._Alert.connectionError();
+            } else {
+                this._Alert.errorGetMosaicsDefintions(err.data.message);
+            }
+        });
+        return deferred.promise;
+    }
+
+    /**
+     * _getTransactionMessagesWithString(address,str,start){
+     * Returns: array
+     */
+    _getTransactionMessagesWithString(address,str,start){
+
+        var deferred = this._q.defer();
+        var promise = deferred.promise;
+
+        this._NetworkRequests.getAllTransactions(helpers.getHostname(this._Wallet.node), address).then((result)=>{
+            console.log('result',result);
+            if(result.data.length) {
+                var messages = [];
+                for (let i = 0; i < result.data.length; ++i) {
+                    let transaction = result.data[i].transaction;
+                    if(transaction.type==257){
+                        // On this version we are only using decoded messages
+                        let msg = this._filter('fmtHexMessage')(transaction.message);
+                        if(msg.includes(str,start)){
+                            messages[messages.length]=msg;
+                        }
+                    }
+                }
+            }
+            deferred.resolve(messages);
+        });
+        return deferred.promise;
+    }
+
+
+    /**
+     * _getLastMessagesWithString(address,str,start){
+     * Returns: string
+     */
+    _getLastMessagesWithString(address,str,start){
+
+        var deferred = this._q.defer();
+        var promise = deferred.promise;
+
+        this._getTransactionMessagesWithString(address,str,start).then((result)=>{
+            console.log("arr",result);
+            deferred.resolve(result[result.length-1]);
+        });
+        return deferred.promise;
+    }
+
+    test(){
+        let msg = "9079867";
+        let act = "TB4LDKZPPSFLJ2IUTTBUWFU2X25YX5OXASCT6QFJ";
+        this._getLastMessagesWithString(act, msg,0).then((res)=>{
+            console.log("res",res);
+        });
+    }
+    
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
@@ -400,39 +485,70 @@ class propertyOwnershipRegisterCtrl {
             this.buttonDisabled = false;
             return;
         }
-
         // OPTIONAL: Check that the citizen is the owner of the account he is showing or even load account from ID!!
-        
-        // 1. [P] gets created from IDp@country:parcel
+
+        // 1. [P] is determined based on IDp@country:parcel
         let seed = this.propertyID +"@"+this.country+":"+"parcel";
-        var cpBwMainAccount = {};
-        this._createBrainWallet(seed).then((cpBwMainAccount)=>{
+        var ppBwMainAccount = {};
+        this._createBrainWallet(seed).then((ppBwMainAccount)=>{
+            console.log(ppBwMainAccount);
 
-            // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
-            let options = {'xem':22000000};
-            let mosaicAmount = 1;
-            this._sendMosaic(cpBwMainAccount.address, this.namespaces.country, "parcel", mosaicAmount, this.common, options).then((data)=>{
-                this.step.tokensToCP = true;
-                this.step.cpLinked = true;
+            // 2. Asset presence of country:parcel is checked in [P].
+            console.log("// 2. Asset presence of country:parcel is checked in [P].");
+            this._ownsMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel").then((ppIsValidParcel)=>{
 
-                // 3. [CP] is set to be a MultiSignature acct from [G] 
-                console.log("Taking control of CP");
-                this._sendOwnedBy(cpBwMainAccount, this.citizenAccount).then((data)=>{
-                    this.step.cpOwned = true;
+                // 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” 
+                console.log("// 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” ");
+                this._getLastMessagesWithString(this._Wallet.currentAccount.address,this.citizenID+"=",0).then((registeredAccountForIDc)=>{
+                    console.log("registeredAccountForIDc",registeredAccountForIDc);
+                    registeredAccountForIDc = registeredAccountForIDc.split('=')[1];
+                    console.log("---",registeredAccountForIDc);
 
-                    //2.6 [G] creates and sends atlantis:citizen to [C]
-                    console.log("Sending token to C: " + this.citizenAccount);
-                    this._sendMosaic(this.citizenAccount, this.namespaces.country, "citizen", 1, this.common, {}).then((data)=>{
-                        this.step.tokensToC = true;
-                        this.step.success = true;
+                    if(!registeredAccountForIDc){
+                        // This is not right, we should audit why the citizen says he owns an account from a parcel that isn't a valid parcel.
+                        alert("ALERT! This user has not been registered yet");
+                    }
+                    else if(registeredAccountForIDc!=this.citizenAccount){
+                            alert("ALARM! This user's account is not registered as his");
+                    }
+                    else if(!ppIsValidParcel){
+                        // This is a newly created parcel, we need to load it with mosaics
+                        // 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    
+                        console.log("// 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    ");
+                        this._sendMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel", 1, this.common, {'xem':22000000}).then((data)=>{
+                            
+                            // 4 [P] is converted to multisig with 1 cosigner: [C]
+                            console.log("// 4 [P] is converted to multisig with 1 cosigner: [C]");
+                            console.log("gohome", ppBwMainAccount, this.citizenAccount);
+                            this._sendOwnedBy(ppBwMainAccount, this.citizenAccount).then((data)=>{
+                                this.step.cpOwned = true;
 
-                    });
+                            });
+                        });
+                    }
+                    else if(ppIsValidParcel){
+                        // This is an old parcel that needs to be given to the citizen
+                        // TODO: What if that account is already a MS?;
+                        
+                        // 3.2 [P] is converted to multisig with 1 cosigner: [C]
+
+                        console.log("gohome", ppBwMainAccount, this.citizenAccount, registeredAccountForIDc);
+                        console.log("// 3.2 [P] is converted to multisig with 1 cosigner: [C]");
+                        this._sendOwnedBy(ppBwMainAccount.address, registeredAccountForIDc).then((data)=>{
+                            this.step.cpOwned = true;
+
+                        },
+                        (err) => {
+                            // Enable send button
+                            this.buttonDisabled = false;
+                            this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
+                        }); 
+                    }
                 });
             });
+                
         },
         (err) => {
-            // Delete private key in common
-            this.common.privateKey = '';
             // Enable send button
             this.buttonDisabled = false;
             this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
