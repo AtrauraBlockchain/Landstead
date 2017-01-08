@@ -300,6 +300,15 @@ select {
   /*background-color: transparent;*/
   border-radius: 0px; }
 
+.login-page .demo {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  background-color: #FEF0DB; }
+
+.login-page .demo p {
+  margin: 0px; }
+
 .login-page .center {
   display: block;
   margin: 0 auto; }
@@ -345,14 +354,28 @@ select {
 form button.btn-success {
   background-color: #5cb85c; }
 
+.signup-page .btn-default:hover {
+  background-color: transparent !important;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
+.signup-page .btn-default {
+  background-color: transparent;
+  text-align: center;
+  padding: 10px;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
 .signup-page .btn-default.active {
-  /*background-color: #8e8e8e;*/
-  background-color: #e3e0cf;
-  border-color: #adadad;
-  color: #444; }
+  background-color: transparent;
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
 
 /*.signup-page .btn-default.active:hover {
-	background-color: #444;
+	background-color: transparent;
 }*/
 .pull-xs-right {
   float: right; }

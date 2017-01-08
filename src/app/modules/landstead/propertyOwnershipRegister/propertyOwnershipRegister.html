@@ -1,0 +1,65 @@
+<div class="Landstead-page">
+   <div class="banner-left">
+      <div class="container">
+      </div>
+   </div>
+   <div class="container-fluid">
+      <div class="row portalWrap">
+         <div class="col-md-12">
+            <h2>Property Ownership Registration</h2>
+         </div>
+      </div>
+      <div class="row row1">
+         <!-- Your content here -->
+         <div class="col-md-6" style="margin-top:10px">
+            <div class="panel panel-default">
+               <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px; color: #333">
+                  <i class="fa fa-chevron-right"></i> Register a property's ownership on the blockchain
+               </div>
+               <div class="panel-body">
+                  <!-- Password Field -->
+                  <label>Enter the Account's password</label><br/>
+                  <input class="form-control form-control-lg" type="password" placeholder="{{ 'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" ng-model="$ctrl.common.password" />
+                  <br/>
+                  <label>Input the Property's Identification Number</label><br/>
+                  <input type="text" class="form-control" ng-model="$ctrl.propertyID" value=""></input>
+                  <br/>
+
+                  <label>Input the citizen's Account</label><br/> 
+                  <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_ADDRESS_FIELD_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
+                  <br/>
+
+                  <button ng-click="$ctrl.submit()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Send</button>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="panel panel-default">
+               <div class="panel-heading" style="background-color: rgb(68, 68, 68); color: white;border-radius: 0px; color: #333">
+                  <i class="fa fa-chevron-right"></i> Status
+               </div>
+               <div class="panel-body">
+                  <ul>
+                     <li>
+                        Property:</br>
+                        {{ $ctrl.propertyID }}@{{$ctrl.country}}:parcel
+                     </li>
+                     <hr/>
+                     <li>
+                        Citizen:</br>
+                        <!-- {{ $ctrl.citizenID }}:{{$ctrl.citizenInfo}}:{{ $ctrl.country}} -->
+                        {{$ctrl.citizenAccount}}
+                     </li>
+                     <br/>
+                     <li class="succeed" ng-if="$ctrl.step.bwCreated">Linking account [PP] created: {{ $ctrl.cpAccount }}</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpLinked">Linking pointer account to the property's... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToCP">Registering pointer account as valid... OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpOwned">Taking control of [PP]... OK!</li>
+                     <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Property has been registered Successfully</li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

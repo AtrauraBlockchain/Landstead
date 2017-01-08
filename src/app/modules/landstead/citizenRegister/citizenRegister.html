@@ -24,11 +24,16 @@
                   <label>Input the citizen's Identification Number</label><br/>
                   <input type="text" class="form-control" ng-model="$ctrl.citizenID" value=""></input>
                   <br/>
+
+                  <label>Input the citizen’s Specific Information (Firstname Lastname, Date of birth) </label><br/>
+                  <input type="text" class="form-control" ng-model="$ctrl.citizenInfo" value=""></input>
+                  <br/>
+
                   <label>Input the citizen's Account</label><br/>	
                   <!-- <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount" ng-model-options="{debounce:500}" ng-change="$ctrl.checkAccount()"/> -->
-                  <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_RECIPIENT_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
+                  <input class="form-control form-control-lg" type="text" placeholder="{{'FORM_ADDRESS_FIELD_PLACEHOLDER' | translate}}" ng-model="$ctrl.citizenAccount"/>
                   <br/>
-                  <button ng-click="$ctrl.submitCitizen()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Send</button>
+                  <button ng-click="$ctrl.submit()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">Send</button>
                </div>
             </div>
          </div>
@@ -39,13 +44,19 @@
                </div>
                <div class="panel-body">
                   <ul>
-                     <li>Citizen: {{ $ctrl.citizenID }}:{{ $ctrl.country}}</li>
-                     <li class="info" ng-if="$ctrl.step.bwCreated">Linking account created: {{ $ctrl.cpAccount }}</li>
-                     <li class="info" ng-if="$ctrl.step.cpMultiSigReady">cpMultiSigReady</li>
-                     <li class="info" ng-if="$ctrl.step.cpLinked">Linking pointer account to citizen's... OK!</li>
-                     <li class="info" ng-if="$ctrl.step.tokensToCP">Registring pointer accountas valid... OK!</li>
-                     <li class="info" ng-if="$ctrl.step.tokensToC">Registering citizen account as valid... OK!</li>
-                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen has been created Successfully</li>
+                     <li>
+                        Starting registration for atlantis citizen:</br>
+                        {{ $ctrl.citizenID }}:{{$ctrl.citizenInfo}}:{{ $ctrl.country}}
+                     </li>
+                     <hr/>
+                     <li class="succeed" ng-if="$ctrl.step.bwCreated">Registration determined for atlantis citizen:<br/>{{ $ctrl.cpAccount }}</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpLinked">Registration linked to citizen account: OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToCP">Registration validated: OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.tokensToC">Citizen account validated: OK!</li>
+                     <li class="succeed" ng-if="$ctrl.step.cpOwned">Setting {{ $ctrl.country }} ownership of citizen registration: OK!</li>
+                     <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Registration for {{ $ctrl.country }} citizen completed Successfully!</li>
+
+
                   </ul>
                </div>
             </div>
