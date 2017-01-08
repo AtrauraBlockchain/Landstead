@@ -27,11 +27,17 @@ IDp - Property Identification Number or Code
 
 Civil Servant continues registration use case
 1. Civil Servant logs in to [G], and accesses 'Validate an account'.
+
 2. A form with 2 fields is presented: the IDc of the citizen and the Citizen’s Account number [C].
+
     2.1  Civil Servant inputs ID Firstname Lastname@country:citizen (We could use Firstname and Lastname so nobody else can guess upfront what the account numbers will be, and because the date of birth is already integrated in the ID. At least that’s the case in Belgium)  
+    
     2.2 [PC] BW gets created
+    
     2.3 [PC] is set to be a MS acct from [G] 
+    
     2.4 [G] inputs account number of [C] to send message (ID=C) to [PC]
+    
     2.5 [G] sends atlantis:citizen to [C]
     
 ###2. Register a Property###
