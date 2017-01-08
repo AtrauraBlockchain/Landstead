@@ -491,39 +491,36 @@ class propertyOwnershipRegisterCtrl {
         let seed = this.propertyID +"@"+this.country+":"+"parcel";
         var ppBwMainAccount = {};
         this._createBrainWallet(seed).then((ppBwMainAccount)=>{
-            console.log(ppBwMainAccount);
 
-            // 2. Asset presence of country:parcel is checked in [P].
             console.log("// 2. Asset presence of country:parcel is checked in [P].");
             this._ownsMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel").then((ppIsValidParcel)=>{
 
-                // 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” 
                 console.log("// 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” ");
                 this._getLastMessagesWithString(this._Wallet.currentAccount.address,this.citizenID+"=",0).then((registeredAccountForIDc)=>{
-                    console.log("registeredAccountForIDc",registeredAccountForIDc);
                     registeredAccountForIDc = registeredAccountForIDc.split('=')[1];
-                    console.log("---",registeredAccountForIDc);
 
                     if(!registeredAccountForIDc){
                         // This is not right, we should audit why the citizen says he owns an account from a parcel that isn't a valid parcel.
-                        alert("ALERT! This user has not been registered yet");
+                        this._Alert.transactionError("ALERT! This user has not been registered yet");
                     }
                     else if(registeredAccountForIDc!=this.citizenAccount){
-                            alert("ALARM! This user's account is not registered as his");
+                        this._Alert.transactionError("ALARM! This user's account is not registered as his");
                     }
                     else if(!ppIsValidParcel){
                         // This is a newly created parcel, we need to load it with mosaics
-                        // 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    
                         console.log("// 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    ");
                         this._sendMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel", 1, this.common, {'xem':22000000}).then((data)=>{
                             
                             // 4 [P] is converted to multisig with 1 cosigner: [C]
                             console.log("// 4 [P] is converted to multisig with 1 cosigner: [C]");
-                            console.log("gohome", ppBwMainAccount, this.citizenAccount);
                             this._sendOwnedBy(ppBwMainAccount, this.citizenAccount).then((data)=>{
                                 this.step.cpOwned = true;
-
-                            });
+                            },
+                            (err) => {
+                                // Enable send button
+                                this.buttonDisabled = false;
+                                this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
+                            }); 
                         });
                     }
                     else if(ppIsValidParcel){
@@ -531,8 +528,6 @@ class propertyOwnershipRegisterCtrl {
                         // TODO: What if that account is already a MS?;
                         
                         // 3.2 [P] is converted to multisig with 1 cosigner: [C]
-
-                        console.log("gohome", ppBwMainAccount, this.citizenAccount, registeredAccountForIDc);
                         console.log("// 3.2 [P] is converted to multisig with 1 cosigner: [C]");
                         this._sendOwnedBy(ppBwMainAccount.address, registeredAccountForIDc).then((data)=>{
                             this.step.cpOwned = true;
