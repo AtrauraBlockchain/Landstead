@@ -52,18 +52,21 @@
                         Property:</br>
                         {{ $ctrl.propertyID }}@{{$ctrl.country}}:parcel
                      </li>
-                     <hr/>
                      <li>
                         Citizen:</br>
                         <!-- {{ $ctrl.citizenID }}:{{$ctrl.citizenInfo}}:{{ $ctrl.country}} -->
                         {{$ctrl.citizenAccount}}
                      </li>
+                     <hr/>
                      <br/>
-                     <li class="succeed" ng-if="$ctrl.step.bwCreated">Linking account [PP] created: {{ $ctrl.cpAccount }}</li>
-                     <li class="succeed" ng-if="$ctrl.step.cpLinked">Linking pointer account to the property's... OK!</li>
-                     <li class="succeed" ng-if="$ctrl.step.tokensToCP">Registering pointer account as valid... OK!</li>
-                     <li class="succeed" ng-if="$ctrl.step.cpOwned">Taking control of [PP]... OK!</li>
-                     <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Property has been registered Successfully</li>
+                     <li class="succeed" ng-if="$ctrl.cpAccount">Linking account [PP] created: {{ $ctrl.cpAccount }}</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step1">1. [P] is determined based on IDp@country:parcel... OK!</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step2">2. Asset presence of country:parcel is checked in [P]... OK!</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step3">3. [PC], Incoming messages from [G] are read to find the last message starting with ID=XXXX... OK!</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step31">3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]... OK!</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step4">4 [P] is converted to multisig with 1 cosigner: [C]... OK!</li><br/>
+                     <li class="succeed" ng-if="$ctrl.step32">3.2 [P] is converted to multisig with 1 cosigner: [C]... OK!</li><br/>
+                     <li class="succeed" style="font-size: bigger;" ng-if="$ctrl.step.success">Property has been registered Successfully</li><br/>
                   </ul>
                </div>
             </div>

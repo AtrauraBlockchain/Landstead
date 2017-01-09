@@ -2,6 +2,11 @@
 ## Land And Immovable Property Ownership Register ##
 Implementation of a Proof of Concept (POC) of an ownership register or cadastral system to prove the viability and usability of blockchain technologym for such a system in real life situations. The system is based on unique identifications and immutable registrations on the blockchain.
 
+Whitepaper: https://docs.google.com/document/d/14Vqi-J9_mw1wWLmQKjCUEQBT31zdekQ9D_25aHNyXTA/edit
+
+Website: http://landstead.atraurablockchain.com
+NEM: https://www.nem.io/
+
 ##Terminology ##
 * BW - Brain wallet
 * MS - Multi Signature
