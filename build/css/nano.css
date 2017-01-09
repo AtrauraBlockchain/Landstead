@@ -254,6 +254,10 @@ fieldset[disabled] .btn-default.focus {
   .home-page .banner h2 {
     font-size: 50px; } }
 
+@media screen and (max-width: 992px) {
+  .home-page .process {
+    text-align: center; } }
+
 .home-page .banner {
   padding-top: 200px;
   height: 600px; }
