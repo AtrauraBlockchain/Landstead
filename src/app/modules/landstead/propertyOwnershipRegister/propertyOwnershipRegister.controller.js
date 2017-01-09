@@ -462,16 +462,7 @@ class propertyOwnershipRegisterCtrl {
             deferred.resolve(result[result.length-1]);
         });
         return deferred.promise;
-    }
-
-    test(){
-        let msg = "9079867";
-        let act = "TB4LDKZPPSFLJ2IUTTBUWFU2X25YX5OXASCT6QFJ";
-        this._getLastMessagesWithString(act, msg,0).then((res)=>{
-            console.log("res",res);
-        });
-    }
-    
+    }    
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
