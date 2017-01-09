@@ -47,6 +47,7 @@ import './modules/faq';
 import './modules/landstead';
 //import './modules/myModule';
 import './modules/transactions';
+import './modules/about';
 
 
 // Create and bootstrap application
@@ -57,6 +58,7 @@ const requires = [
     'app.components',
     'app.filters',
     'app.home',
+    'app.about',
     'app.dashboard',
     'app.transferTransaction',
     'app.createMultisig',

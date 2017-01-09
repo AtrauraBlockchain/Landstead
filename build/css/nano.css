@@ -250,6 +250,17 @@ fieldset[disabled] .btn-default.focus {
   text-align: center;
   margin-bottom: 50px; }
 
+.home-page .foot {
+  background-color: #333;
+  padding: 20px; }
+
+.home-page .foot a {
+  color: #fff; }
+
+.home-page .foot b {
+  text-decoration: underline;
+  color: #fff; }
+
 @media screen and (min-width: 992px) {
   .home-page .banner h2 {
     font-size: 50px; } }
