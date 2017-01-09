@@ -27,6 +27,7 @@
                   <br/>
 
                   <label>Input the citizen's Identification Number</label><br/>
+                  Warning: For now citizens can only be asigned once to a property.
                   <input class="form-control form-control-lg" type="text" ng-model="$ctrl.citizenID"/>
                   <br/>
 
@@ -36,8 +37,8 @@
 
                   <button ng-click="$ctrl.submit()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">
                   Send</button>
-                  <button ng-click="$ctrl.test()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">
-                  Test</button>
+                  <!-- <button ng-click="$ctrl.test()" ng-disabled="$ctrl.buttonDisabled" class="btn btn-lg btn-success">
+                  Test</button> -->
                </div>
             </div>
          </div>
