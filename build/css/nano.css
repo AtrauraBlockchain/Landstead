@@ -256,7 +256,10 @@ fieldset[disabled] .btn-default.focus {
 
 @media screen and (max-width: 992px) {
   .home-page .process {
-    text-align: center; } }
+    text-align: center; }
+  .navbar-header button {
+    min-width: auto;
+    width: auto; } }
 
 .home-page .banner {
   padding-top: 200px;
