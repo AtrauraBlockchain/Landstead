@@ -110,15 +110,21 @@ class propertyOwnershipRegisterCtrl {
         this.propertyID = randomnumber;
         this.citizenID = '807897777200';
         this.citizenAccount = "TDTSZ6TYSPR7PBH3SQJJ4F3Q3URQJGQMODY7PYME"; //"this is a test wallet2"
-        // 1. [P] gets created from IDp@country:parcel
-        this.step.bwCreated = false;
-        // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
-        this.step.cpLinked = false;
-        this.step.tokensToCP = false;
-        // 3. [CP] is set to be a MultiSignature acct from [G] 
-        this.step.cpOwned = false;
-        // 4. [P] becomes MS for protection
+        
+        // 1. [P] is determined based on IDp@country:parcel
+        this.step1 = false;
+        // 2. Asset presence of country:parcel is checked in [P].
+        this.step2 = false;
+        // 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” 
+        this.step3 = false;
+        // 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    
+        this.step31 = false;
+        // 4 [P] is converted to multisig with 1 cosigner: [C]
+        this.step4 = false;
+        // 3.2 [P] is converted to multisig with 1 cosigner: [C]
+        this.step32 = false;
         this.step.success = false;
+
 
         // Init account mosaics
         this._updateCurrentAccountMosaics();
@@ -462,16 +468,7 @@ class propertyOwnershipRegisterCtrl {
             deferred.resolve(result[result.length-1]);
         });
         return deferred.promise;
-    }
-
-    test(){
-        let msg = "9079867";
-        let act = "TB4LDKZPPSFLJ2IUTTBUWFU2X25YX5OXASCT6QFJ";
-        this._getLastMessagesWithString(act, msg,0).then((res)=>{
-            console.log("res",res);
-        });
-    }
-    
+    }    
 
     /**
      * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
@@ -487,16 +484,22 @@ class propertyOwnershipRegisterCtrl {
         }
         // OPTIONAL: Check that the citizen is the owner of the account he is showing or even load account from ID!!
 
+
+        
+
         // 1. [P] is determined based on IDp@country:parcel
         let seed = this.propertyID +"@"+this.country+":"+"parcel";
         var ppBwMainAccount = {};
         this._createBrainWallet(seed).then((ppBwMainAccount)=>{
+            this.step1 = true;
 
-            console.log("// 2. Asset presence of country:parcel is checked in [P].");
+            // 2. Asset presence of country:parcel is checked in [P].
             this._ownsMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel").then((ppIsValidParcel)=>{
+                this.step2 = true;
 
-                console.log("// 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” ");
+                // 3. [PC], Incoming messages from [G] are read to find the last message starting with “<IDc>=” 
                 this._getLastMessagesWithString(this._Wallet.currentAccount.address,this.citizenID+"=",0).then((registeredAccountForIDc)=>{
+                    this.step3 = true;
                     registeredAccountForIDc = registeredAccountForIDc.split('=')[1];
 
                     if(!registeredAccountForIDc){
@@ -507,14 +510,14 @@ class propertyOwnershipRegisterCtrl {
                         this._Alert.transactionError("ALARM! This user's account is not registered as his");
                     }
                     else if(!ppIsValidParcel){
-                        // This is a newly created parcel, we need to load it with mosaics
-                        console.log("// 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    ");
+                        // 3.1 [G] sends message IDp together with 1 country:parcel Mosaic to [P]    
                         this._sendMosaic(ppBwMainAccount.address, this.namespaces.country, "parcel", 1, this.common, {'xem':22000000}).then((data)=>{
+                            this.step31 = true;
                             
                             // 4 [P] is converted to multisig with 1 cosigner: [C]
-                            console.log("// 4 [P] is converted to multisig with 1 cosigner: [C]");
                             this._sendOwnedBy(ppBwMainAccount, this.citizenAccount).then((data)=>{
-                                this.step.cpOwned = true;
+                                this.step4 = true;
+                                this.step.success = true;
                             },
                             (err) => {
                                 // Enable send button
@@ -528,10 +531,9 @@ class propertyOwnershipRegisterCtrl {
                         // TODO: What if that account is already a MS?;
                         
                         // 3.2 [P] is converted to multisig with 1 cosigner: [C]
-                        console.log("// 3.2 [P] is converted to multisig with 1 cosigner: [C]");
                         this._sendOwnedBy(ppBwMainAccount.address, registeredAccountForIDc).then((data)=>{
-                            this.step.cpOwned = true;
-
+                            this.step32 = true;
+                            this.step.success = true;
                         },
                         (err) => {
                             // Enable send button
