@@ -270,7 +270,9 @@ fieldset[disabled] .btn-default.focus {
     text-align: center; }
   .navbar-header button {
     min-width: auto;
-    width: auto; } }
+    width: auto; }
+  .home-page .foot {
+    text-align: center; } }
 
 .home-page .banner {
   padding-top: 200px;
