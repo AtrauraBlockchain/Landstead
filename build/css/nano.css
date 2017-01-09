@@ -272,7 +272,9 @@ fieldset[disabled] .btn-default.focus {
     min-width: auto;
     width: auto; }
   .home-page .foot {
-    text-align: center; } }
+    text-align: center; }
+  .home-page .foot li {
+    padding: 0px; } }
 
 .home-page .banner {
   padding-top: 200px;
