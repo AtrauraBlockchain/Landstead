@@ -14,7 +14,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav" ng-show="$ctrl._DataBridge.accountData.meta && $ctrl._DataBridge.accountData.account">
-        <li><a style="outline:0;" ui-sref-active="active" ui-sref="app.dashboard" show-authed="true"><i class="fa fa-home"></i> Dashboard</a></li>
+        <li><a style="outline:0;" ui-sref-active="active" ui-sref="app.dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
         <!-- <li><a style="outline:0;" ui-sref-active="active" ui-sref="app.transferTransaction" show-authed="true"><i class="fa fa-send"></i> Wallet</a></li>
         <li><a style="outline:0;" ui-sref-active="active" ui-sref="app.portal" show-authed="true"><i class="fa fa-book"></i> Services</a></li> -->
         <li><a style="outline:0;" ui-sref-active="active" ui-sref="app.explorerHome" show-authed="true"><i class="fa fa-globe"></i> Explorer</a></li>
@@ -24,7 +24,7 @@
        
        <!-- <li><a style="outline:0;text-transform: uppercase;" ui-sref-active="active" ui-sref="app.signup" show-authed="false"><small><b>{{ 'HEADER_SIGNUP_BUTTON' | translate }}</b></small></a></li> -->
         
-        <!-- <li class="dropdown node">
+        <li class="dropdown node">
           <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" show-authed="true" show-network-status><i class="fa fa-cloud-upload"></i> Node</a>
           <ul class="dropdown-menu">
             <li class="text-center" style="border-bottom:1px solid #444;background-color:#444;color:white;">{{ 'HEADER_NODE_BLOCK_HEIGHT' | translate }}</li>
@@ -37,9 +37,9 @@
              <li><input type="text" class="form-control" style="width:100%;border-radius:0px;" ng-model="$ctrl.customNode" placeholder="{{ 'HEADER_NODE_CUSTOM_INFO' | translate }}"></li>
              <li><button type="submit" class="btn btn-success" ng-click="$ctrl.changeNode($ctrl.customNode)" style="width: 100%; background: #444; color: white; border: medium none;border-radius:0px;">{{ 'HEADER_NODE_CONNECT' | translate }}</button></li>
           </ul>
-        </li> -->
-        <!-- <li ng-show="$ctrl._DataBridge.accountData.meta && $ctrl._DataBridge.accountData.account"><a ui-sref-active="active" ui-sref="app.account" show-authed="true">Account</a></li>
-        <li ng-show="$ctrl._Wallet.currentAccount.label"><a>{{ $ctrl._Wallet.currentAccount.label }}</a></li> -->
+        </li>
+        <li ng-show="$ctrl._DataBridge.accountData.meta && $ctrl._DataBridge.accountData.account"><a ui-sref-active="active" ui-sref="app.account" show-authed="true">Account</a></li>
+        <li ng-show="$ctrl._Wallet.currentAccount.label"><a>{{ $ctrl._Wallet.currentAccount.label }}</a></li>
         <li><a style="outline:0;cursor:pointer;border-right:none;" show-authed="true" ng-click="$ctrl.logout()"><i class="fa fa-sign-out"></i> <small><b>{{$ctrl.walletName}}</small></b></a></li>
       </ul>
     </div><!-- /.navbar-collapse -->

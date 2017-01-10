@@ -185,7 +185,6 @@ class propertyRegisterCtrl {
             return this._NetworkRequests.getAccountData(helpers.getHostname(this._Wallet.node), recipientAddress).then((data) => {
                     // Store recipient public key (needed to encrypt messages)
                     transferData.recipientPubKey = data.account.publicKey;
-                    console.log(transferData.recipientPubKey)
                     // Set the address to send to
                     transferData.recipient = recipientAddress;
                 },
@@ -377,21 +376,16 @@ class propertyRegisterCtrl {
         transferData.multisigPubKey = subjectFullAccount.publicKey;
         
         // Build the entity to send
-        console.log("subjectFullAccount", subjectFullAccount);
         let entity = this._Transactions._constructAggregate(transferData, ownersArray);
         return this._send(entity, subjectFullAccount);
     }
 
     /**
-     * This usecase showcases how to create and validate a citizen account on the blockchain with the following steps:
-     *    - 0. A Government officer is logged into this account and a Citizen already owns an account (citizenAccount)
-     *    - 1. A form with 2 password fields appears.
-     *    -     1.1  Officer inputs ID:country
-     *    -     1.2 [CP] BW gets created
-     *    -     1.3 [CP] is set to be a MS acct from [G] 
-     *    -     1.4 [G] sends message (ID=C) to [CP]
-     *    -     1.5 [G] creates and sends atlantis.register:citizen to [CP]
-     *    -     1.6 [G] creates and sends atlantis:citizen to [C]
+     * This usecase showcases how to register a property on the blockchain
+     *    - 0. A Government officer is logged into his account and has a property title
+     *    - 1. [P] gest created from IDp@country:parcel
+     *    - 2. [C] sends message IDp together with 1 country:parcel Asset to [P]
+     *    - 3. [P] becomes MS for protection
      */
     submit(){
 
@@ -400,10 +394,12 @@ class propertyRegisterCtrl {
             this.buttonDisabled = false;
             return;
         }
+
         // 1. [P] gets created from IDp@country:parcel
         let seed = this.propertyID +"@"+this.country+":"+"parcel";
         var cpBwMainAccount = {};
         this._createBrainWallet(seed).then((cpBwMainAccount)=>{
+
 
             // 2. [G] sends message IDp together with 1 country:parcel Mosaic to [P]
             let options = {'xem':22000000};
@@ -411,8 +407,8 @@ class propertyRegisterCtrl {
                 this.step.tokensToCP = true;
                 this.step.cpLinked = true;
 
+
                 // 3. [CP] is set to be a MultiSignature acct from [G] 
-                console.log("Taking control of CP");
                 this._sendOwnedBySelf(cpBwMainAccount).then((data)=>{
                     this.step.cpOwned = true;
                     this.success = true;
